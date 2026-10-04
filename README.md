@@ -14,17 +14,24 @@ namespace, no bundler, no framework and no runtime packages.
 
 ## Features
 
+- A deep-space sky behind everything: faint nebulae and 220 stars, a few of them twinkling, seen
+  through the playfield.
 - Four walls of thin bricks: a full wall, a checkerboard, a pyramid under two rows of silver
   bricks that take two hits, and a grey wall for the battle station. After level 4 they come round
   again, with the ball starting faster.
-- Behind each wall a UFO with rainbow-shifting lights slides left and right. Hit it and the rest of
-  the wall dissolves and the next level starts: you don't have to clear every brick.
-- Level 4 has no UFO: a grey battle station fires bolts at the paddle. Bat one back and it scores
-  1000 points when it hits the station. After level 4 the levels come round again, faster.
-- 10 lives a level, and when you hit the UFO the whole score is multiplied by the lives you have
-  left.
+- Behind each of the first three walls a UFO with rainbow-shifting lights slides left and right.
+  Hit it and the rest of the wall dissolves and the next level starts: you don't have to clear
+  every brick.
+- Level 4 has no UFO: a grey battle station behind the wall fires green bolts at the paddle. Bat
+  one back and it turns gold, and scores 1000 points if it hits the station. The ball hitting the
+  station ends the level.
+- 10 lives a level, and when a level ends the whole score is multiplied by the lives you have
+  left ("7 lives left: score × 7").
+- The paddle speeds up the longer you hold a key, so a tap nudges it and a long press crosses the
+  screen.
 - Game over offers a retry of the level you lost (with the score it started with), a fresh start
   from level 1, or the title. The best score is saved on the TV.
+- Short arcade tones for every bounce and a layered crash for a UFO hit; M turns the sound off.
 - Paddle, ball and bricks, played at a fixed 1920×1080 layout, with everything that matters kept
   well inside the screen edges and no text smaller than 28px.
 - Works with a plain USB or Bluetooth keyboard and with the TV remote, with the same keys doing the
