@@ -27,7 +27,9 @@ images.
   there the game goes on as always; after the last level comes level 1 with the loop one higher.
 - A fourth control line is added under the others, 32px, same style: "Level: ← → or A D".
 - The chosen level is saved in `localStorage` under `breakout.level` (try/catch: without storage it
-  is simply 1 each time) whenever it changes, and read when the title shows. A saved value that is
+  is simply 1 each time) whenever it changes, and read once, when the app starts. From then on the game keeps the chosen
+  level in memory for the whole session, so returning to the title (from Game over or the pause
+  dialog) shows the level chosen last, even when storage throws. A saved value that is
   not a whole number from 1 to `levels.COUNT` counts as 1.
 - Back on the title still opens the leave dialog. While the leave dialog is open, Left/Right move
   its focus as today and do not change the level.
