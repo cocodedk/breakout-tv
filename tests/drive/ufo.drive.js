@@ -53,7 +53,7 @@ runDrive(async function (browser, url) {
   await h.seed(page, { bricks: h.FAR_BRICKS, core: { x: 772, dir: 1 }, ball: { x: 740, y: 110, vx: 0, vy: -720 } });
   await page.clock.runFor(100);
   var snap = await h.snap(page);
-  assert.deepStrictEqual([snap.state, snap.score], ["dissolve", 500], "the hull is a hit");
+  assert.deepStrictEqual([snap.state, snap.score], ["dissolve", 5000], "the hull is a hit, 500 points times 10 lives");
   near(snap.core.x - 740, 40, 2, "the ball hit 40px left of the UFO's middle");
 
   // The colours keep shifting during the dissolve.

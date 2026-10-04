@@ -39,12 +39,12 @@ runDrive(async function (browser, url) {
 
   await loseBall(page);
   var snap = await h.snap(page);
-  assert.strictEqual(snap.lives, 2);
+  assert.strictEqual(snap.lives, 9);
   assert.strictEqual(snap.state, "serve");
   assert.strictEqual(snap.paddleX, 680, "the paddle is centred again for the next serve");
-  assert.strictEqual(await h.text(page, "#hud-lives"), "Lives ● ●");
+  assert.strictEqual(await h.text(page, "#hud-lives"), "Lives 9");
 
-  await h.seed(page, { score: 1230 });
+  await h.seed(page, { score: 1230, lives: 2 });
   await loseBall(page);
   assert.strictEqual((await h.snap(page)).lives, 1);
   await loseBall(page);
@@ -52,8 +52,8 @@ runDrive(async function (browser, url) {
   assert.strictEqual(snap.screen, "over");
   assert.ok(await page.isVisible("#screen-over"));
   assert.ok(!(await page.isVisible("#screen-play")));
-  assert.strictEqual(await h.text(page, "#over-score"), "Score 1230");
-  assert.strictEqual(await h.text(page, "#over-best"), "Best score 1230");
+  assert.strictEqual(await h.text(page, "#over-score"), "Score 1,230");
+  assert.strictEqual(await h.text(page, "#over-best"), "Best score 1,230");
   assert.ok(await page.isVisible("#over-new-best"), "a first score beats no best");
   assert.strictEqual(await page.getAttribute("#over-retry", "class"), "choice focused");
 
@@ -61,26 +61,26 @@ runDrive(async function (browser, url) {
   assert.strictEqual(await page.getAttribute("#over-again", "class"), "choice focused");
   await h.tap(page, K.BACK);
   assert.strictEqual((await h.snap(page)).screen, "title", "Back goes to the title");
-  assert.strictEqual(await h.text(page, "#title-best"), "Best score: 1230");
+  assert.strictEqual(await h.text(page, "#title-best"), "Best score: 1,230");
 
   await h.startGame(page);
   snap = await h.snap(page);
-  assert.deepStrictEqual([snap.score, snap.lives, snap.level], [0, 3, 1]);
+  assert.deepStrictEqual([snap.score, snap.lives, snap.level], [0, 10, 1]);
   await h.seed(page, { lives: 1 });
   await loseBall(page);
   assert.strictEqual((await h.snap(page)).screen, "over");
   assert.ok(!(await page.isVisible("#over-new-best")), "a score of 0 is not a new best");
-  assert.strictEqual(await h.text(page, "#over-best"), "Best score 1230");
+  assert.strictEqual(await h.text(page, "#over-best"), "Best score 1,230");
   await h.tap(page, K.ENTER);
   snap = await h.snap(page);
-  assert.deepStrictEqual([snap.screen, snap.state, snap.score, snap.lives], ["play", "serve", 0, 3], "Retry level 1");
+  assert.deepStrictEqual([snap.screen, snap.state, snap.score, snap.lives], ["play", "serve", 0, 10], "Retry level 1");
 
   // Hitting the core dissolves the wall, shows the level banner, then the level 2 wall in Serve.
   await h.seed(page, CORE_HIT);
   await page.clock.runFor(1200);
   snap = await h.snap(page);
   assert.strictEqual(snap.state, "banner");
-  assert.strictEqual(snap.score, 500);
+  assert.strictEqual(snap.score, 5000);
   assert.strictEqual(snap.bricksLeft, 0);
   assert.ok(await page.isVisible("#play-banner"));
   assert.strictEqual(await h.text(page, "#play-banner"), "Level 2");

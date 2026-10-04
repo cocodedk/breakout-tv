@@ -9,6 +9,7 @@
   var BRICKS_PER_RISE = 20;
   var BRICK_RISE = 1.05;
   var MAX_SPEED = 1200;
+  var MAX_SCORE = 999999999999;
 
   function points(color) {
     return POINTS[color] || 0;
@@ -36,10 +37,23 @@
     return score > best ? { best: score, isNew: true } : { best: best, isNew: false };
   }
 
+  /* The score times the lives left, never above MAX_SCORE. */
+  function multiply(score, lives) {
+    return Math.min(MAX_SCORE, score * lives);
+  }
+
+  /* A whole number with a comma every three digits, whatever the TV's language is set to. */
+  function formatScore(n) {
+    return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+
   BO.score = {
     POINTS: POINTS,
     CORE_POINTS: CORE_POINTS,
     MAX_SPEED: MAX_SPEED,
+    MAX_SCORE: MAX_SCORE,
+    multiply: multiply,
+    formatScore: formatScore,
     points: points,
     startSpeed: startSpeed,
     speed: speed,

@@ -57,11 +57,11 @@ runDrive(async function (browser, url) {
   var snap = await h.snap(page);
   assert.deepStrictEqual([snap.state, snap.level, snap.bricksLeft], ["moving", 1, 0], "no bricks does not end the level");
 
-  // A hit: 500 points, the dissolve, and a pause freezes it.
+  // A hit: 500 points times the 10 lives left, the dissolve, and a pause freezes it.
   await h.seed(page, AT_CORE);
   await page.clock.runFor(100);
   snap = await h.snap(page);
-  assert.deepStrictEqual([snap.state, snap.score, snap.bricksLeft], ["dissolve", 500, 2]);
+  assert.deepStrictEqual([snap.state, snap.score, snap.bricksLeft], ["dissolve", 5000, 2]);
   var hit = snap.core;
   await h.tap(page, K.SPACE);
   assert.strictEqual((await h.snap(page)).state, "dissolve", "keys do nothing during the dissolve");
@@ -75,7 +75,7 @@ runDrive(async function (browser, url) {
   // It ends after a second: no bricks left, then the banner, then the next level's wall.
   await page.clock.runFor(1100);
   snap = await h.snap(page);
-  assert.deepStrictEqual([snap.state, snap.bricksLeft, snap.score], ["banner", 0, 500], "dissolved bricks score nothing");
+  assert.deepStrictEqual([snap.state, snap.bricksLeft, snap.score], ["banner", 0, 5000], "dissolved bricks score nothing");
   assert.strictEqual(await h.text(page, "#play-banner"), "Level 2");
   assert.deepStrictEqual(snap.core, hit, "the core stays where it was hit");
   await page.clock.runFor(1000);

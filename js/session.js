@@ -2,7 +2,7 @@
    drives use. The rules that change it live in game.js. */
 (function (BO) {
   "use strict";
-  var START_LIVES = 3;
+  var START_LIVES = 10;
 
   var g = {
     START_LIVES: START_LIVES,
