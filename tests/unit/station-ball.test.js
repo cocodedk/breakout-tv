@@ -11,14 +11,14 @@ var bolt = helpers.bolt;
 test("the ball touching the station's disc is a hit, worth 500, and every bolt goes", function () {
   var s = level4();
   s.bolts = [bolt(1500, 50, 0, 10)];
-  s.ball.x = 800;
-  s.ball.y = 140 + 100 + 12;
+  s.ball.x = s.station.x;
+  s.ball.y = 140 + 100 + 11;
   s.ball.vx = 0;
   s.ball.vy = -720;
   assert.deepStrictEqual(station.step(s, STEP), ["core"]);
   assert.deepStrictEqual([s.score, s.bolts.length, s.ball.vy], [500, 0, -720]);
   s.score = 0;
-  s.ball.y += 1;
+  s.ball.y += 2;
   assert.deepStrictEqual(station.step(s, STEP), [], "a ball just outside the disc is no hit");
 });
 

@@ -14,7 +14,7 @@ var speedOf = helpers.speedOf;
 test("level 4 has the station and no UFO, the other levels the UFO and no station", function () {
   var s = physics.newState([]);
   station.setup(s, 4);
-  assert.deepStrictEqual([s.station, s.core, s.bolts, s.fireIn], [{ x: 800, y: 140, r: 100 }, null, [], 2]);
+  assert.deepStrictEqual([s.station, s.core, s.bolts, s.fireIn], [{ x: 800, y: 140, r: 100, dir: 1 }, null, [], 2]);
   station.setup(s, 3);
   assert.deepStrictEqual([s.station, s.core], [null, { x: 800, dir: 1 }]);
   assert.deepStrictEqual(station.step(s, STEP), [], "nothing happens without a station");
@@ -62,15 +62,15 @@ test("a new bolt leaves the dish at 600 px/s, aimed at the paddle's centre at it
   s.fireIn = STEP;
   assert.deepStrictEqual(station.step(s, STEP), ["fire"]);
   var b = s.bolts[0];
-  assert.deepStrictEqual([b.x, b.y, b.back], [840, 100, false]);
+  assert.deepStrictEqual([b.x, b.y, b.back], [s.station.x + 40, 100, false]);
   assert.ok(Math.abs(speedOf(b) - 600) < 1e-9);
-  var dx = 320 - 840;
+  var dx = 320 - b.x;
   var dy = 816 - 100;
   assert.ok(Math.abs(b.vx / b.vy - dx / dy) < 1e-9, "its direction points at (320, 816)");
   assert.ok(b.vy > 0);
 });
 
-test("a bolt passes through bricks without touching them", function () {
+test("a green bolt passes through bricks without touching them", function () {
   var s = level4();
   s.bricks = levels.build(4);
   var count = s.bricks.length;
@@ -79,6 +79,15 @@ test("a bolt passes through bricks without touching them", function () {
   assert.strictEqual(s.bricks.length, count);
   assert.ok(s.bricks.every(function (b) { return b.hits === (b.color === "S" ? 2 : 1); }));
   assert.ok(s.bolts[0].y > 500, "it flew on through the wall");
+});
+
+test("a bolt fired with the station's centre at 500 leaves from (540, 100)", function () {
+  var s = level4();
+  s.station.x = 500;
+  s.fireIn = STEP;
+  station.step(s, STEP);
+  assert.deepStrictEqual([s.bolts[0].x, s.bolts[0].y], [s.station.x + 40, 100]);
+  assert.ok(Math.abs(s.bolts[0].x - 540) < 1, "the dish of a station at 500 is at 540");
 });
 
 test("a green bolt meeting the paddle turns gold and leaves at 900 px/s at the ball's angle", function () {

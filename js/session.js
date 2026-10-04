@@ -35,14 +35,14 @@
       ball: { x: b.x, y: b.y, vx: b.vx, vy: b.vy },
       bricksLeft: g.s.bricks.length,
       core: g.s.core && { x: g.s.core.x, y: BO.core.Y, dir: g.s.core.dir },
-      station: g.s.station && { x: g.s.station.x, y: g.s.station.y, r: g.s.station.r, charging: BO.station.charging(g.s) },
+      station: g.s.station && { x: g.s.station.x, y: g.s.station.y, r: g.s.station.r, dir: g.s.station.dir, charging: BO.station.charging(g.s) },
       bolts: g.s.bolts.map(function (b) { return { x: b.x, y: b.y, vx: b.vx, vy: b.vy, back: b.back }; })
     };
   };
 
   /* Sets up a game for the drives: any of score, levelStartScore, lives, level (which loads that level's
      wall and its UFO or station), loop, bricks [{col, row, color}],
-     core {x, dir}, bolts [{x, y, vx, vy, back}], fireIn (seconds to the next shot) and ball {x, y, vx, vy}
+     core {x, dir}, station {x, dir}, bolts [{x, y, vx, vy, back}], fireIn (seconds to the next shot) and ball {x, y, vx, vy}
      (which sends the ball flying). */
   g.seed = function (p) {
     if (p.score !== undefined) { g.s.score = p.score; }
@@ -58,6 +58,7 @@
       g.s.bricks = p.bricks.map(function (b) { return BO.levels.brick(b.col, b.row, b.color); });
     }
     if (p.core && g.s.core) { Object.assign(g.s.core, p.core); }
+    if (p.station && g.s.station) { Object.assign(g.s.station, p.station); }
     if (p.bolts) { g.s.bolts = p.bolts.map(function (b) { return Object.assign({}, b); }); }
     if (p.fireIn !== undefined) { g.s.fireIn = p.fireIn; }
     if (p.ball) {

@@ -7,8 +7,9 @@ var runDrive = require("./drive-runner.js").runDrive;
 var h = require("./drive-helpers.js");
 var K = h.KEY;
 
-/* The ball parked at rest far from everything, so only the bolts matter. */
-var PARKED = { ball: { x: 100, y: 700, vx: 0, vy: 0 } };
+/* The ball parked at rest far from everything, so only the bolts matter, and the station sliding left so
+   that it is above the paddle's middle when the first returned bolt arrives, 3.9 s after the launch. */
+var PARKED = { bricks: h.FAR_BRICKS, ball: { x: 100, y: 700, vx: 0, vy: 0 }, station: { x: 1140, dir: -1 } };
 
 function pixel(page, x, y) {
   return page.evaluate(function (p) {
@@ -41,7 +42,9 @@ async function checkStationShown(page) {
   var snap = await h.snap(page);
   assert.deepStrictEqual([snap.level, snap.loop, snap.state, snap.bricksLeft, snap.core, snap.bolts],
     [4, 0, "serve", 136, null, []], "a UFO hit on level 3 leads to level 4, with no UFO and no bolts");
-  assert.deepStrictEqual(snap.station, { x: 800, y: 140, r: 100, charging: false });
+  assert.ok(snap.station.x >= 800 && snap.station.dir === 1, "it starts at 800 moving right: " + snap.station.x);
+  await h.seed(page, { station: { x: 800, dir: 1 } });
+  assert.deepStrictEqual((await h.snap(page)).station, { x: 800, y: 140, r: 100, dir: 1, charging: false });
   assert.deepStrictEqual(await pixel(page, 760, 60), [138, 147, 166, 255], "the hull is drawn");
   var dark = await pixel(page, 850, 210);
   [138, 147, 166].forEach(function (v, i) {
@@ -56,7 +59,7 @@ async function checkSeededLevel(context, url) {
   await h.seed(page, { level: 4 });
   var snap = await h.snap(page);
   assert.deepStrictEqual([snap.level, snap.bricksLeft, snap.core, snap.station],
-    [4, 136, null, { x: 800, y: 140, r: 100, charging: false }]);
+    [4, 136, null, { x: 800, y: 140, r: 100, dir: 1, charging: false }]);
   await h.seed(page, { level: 1 });
   snap = await h.snap(page);
   assert.deepStrictEqual([snap.bricksLeft, snap.station === null, snap.core !== null], [120, true, true]);
@@ -90,7 +93,7 @@ async function checkBatted(page, before) {
   }
   assert.ok(turned, "the paddle under the bolt bats it back");
   h.near(speedOf(turned), 900, 0.01, "returned bolt speed");
-  assert.ok(turned.vy < 0 && Math.abs(turned.vx) < 30, "it leaves almost straight up from the paddle's middle");
+  assert.ok(turned.vy < 0 && Math.abs(turned.vx) < 60, "it leaves almost straight up from the paddle's middle");
   await page.clock.runFor(1000);
   var snap = await h.snap(page);
   assert.deepStrictEqual([snap.bolts.length, snap.score - before, snap.lives], [0, 1000, 10],

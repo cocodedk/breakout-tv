@@ -79,7 +79,7 @@ function atCore(bricks) {
 
 /* A seed for a station hit on level 4: the ball just below the station, flying straight up at it. */
 function atStation(bricks) {
-  return { bricks: bricks || [], ball: { x: 800, y: 300, vx: 0, vy: -720 } };
+  return { bricks: bricks || [], station: { x: 800, dir: 1 }, ball: { x: 800, y: 300, vx: 0, vy: -720 } };
 }
 
 /* Gets to level 4 the way a player does: a UFO hit on level 3, the dissolve, the banner and the new wall. */

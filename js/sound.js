@@ -12,6 +12,7 @@
     wall: [["square", 330, 330, 0.04]],
     fire: [["square", 880, 440, 0.12, 0.12]],
     reflect: [["square", 660, 1320, 0.08, 0.15]],
+    cut: [["square", 520, 260, 0.05, 0.1]],
     cleared: [["square", 523, 523, 0.12], ["square", 659, 659, 0.12], ["square", 784, 784, 0.12]],
     over: [["square", 392, 392, 0.25], ["square", 262, 262, 0.25]]
   };
@@ -81,12 +82,12 @@
   }
 
   /* The tones for one game step: one for the ball (the first of core, brick, paddle, wall), then one for
-     each bolt event (fire, reflect, station-hit). */
+     each bolt event (fire, reflect, cut, station-hit). */
   function playEvents(events) {
     var ball = ["core", "brick", "paddle", "wall"].filter(function (e) { return events.indexOf(e) >= 0; })[0];
     if (ball) { play(ball); }
     events.forEach(function (e) {
-      if (e === "fire" || e === "reflect" || e === "station-hit") { play(e); }
+      if (e === "fire" || e === "reflect" || e === "cut" || e === "station-hit") { play(e); }
     });
   }
 
