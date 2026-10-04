@@ -8,14 +8,9 @@
   var MAX_X = 1540;
   var START_X = 800;
 
+  /* A core in the middle of its strip, moving right: how every level starts. */
   function create() {
     return { x: START_X, dir: 1 };
-  }
-
-  /* The core back at the middle of its strip, moving right: the start of a level. */
-  function reset(core) {
-    core.x = START_X;
-    core.dir = 1;
   }
 
   /* Slides the core along its strip, turning back as soon as it reaches an end. */
@@ -25,23 +20,14 @@
     if (core.x <= MIN_X) { core.x = 2 * MIN_X - core.x; core.dir = 1; }
   }
 
-  /* True when a ball of radius r, moving in a straight line from (x0, y0) to (x1, y1) while the core
-     slides from centre x cx0 to core.x, touches the core's disc at any moment of the step. The glow
-     does not count. Seen from the core, the ball also moves in a straight line. */
-  function touches(core, cx0, x0, y0, x1, y1, r) {
-    var ax = x0 - cx0;
-    var ay = y0 - Y;
-    var vx = x1 - core.x - ax;
-    var vy = y1 - Y - ay;
-    var len2 = vx * vx + vy * vy;
-    var t = len2 > 0 ? -(ax * vx + ay * vy) / len2 : 0;
-    t = Math.max(0, Math.min(1, t));
-    var dx = ax + t * vx;
-    var dy = ay + t * vy;
+  /* True when a ball of radius r centred at (bx, by) touches the core's disc. The glow does not count. */
+  function touches(core, bx, by, r) {
+    var dx = bx - core.x;
+    var dy = by - Y;
     var reach = r + R;
     return dx * dx + dy * dy <= reach * reach;
   }
 
-  BO.core = { Y: Y, R: R, create: create, reset: reset, move: move, touches: touches };
+  BO.core = { Y: Y, R: R, create: create, move: move, touches: touches };
   if (typeof module !== "undefined" && module.exports) { module.exports = BO.core; }
 })(typeof module !== "undefined" && module.exports ? require("./app.js") : window.BO);

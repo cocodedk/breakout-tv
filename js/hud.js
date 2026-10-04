@@ -10,14 +10,15 @@
     ctx = document.getElementById("playfield").getContext("2d");
   }
 
-  /* The HUD row and the playfield, from the session. */
+  /* The HUD row and the playfield, from the session. The wall's fade and the ball's hiding follow
+     from the phase the game is in. */
   function refresh() {
     var dots = [];
     for (var i = 0; i < g.lives; i++) { dots.push(DOT); }
     BO.screens.text("hud-score", "Score " + g.s.score);
     BO.screens.text("hud-level", "Level " + g.level);
     BO.screens.text("hud-lives", "Lives " + dots.join(" "));
-    BO.render.draw(ctx, g.s, g.fade);
+    BO.render.draw(ctx, g.s, { fade: BO.phases.fade(), ballHidden: BO.phases.timed() });
   }
 
   /* Serve, Moving, Dissolve or Banner: the launch hint and the level banner follow it. */

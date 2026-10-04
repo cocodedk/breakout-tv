@@ -77,7 +77,7 @@ async function playThree(page) {
    the level banner. */
 async function coreHit(page) {
   var before = await tones(page);
-  await h.seed(page, { bricks: [], core: { x: 780, dir: 1 }, ball: { x: 800, y: 110, vx: 0, vy: -720 } });
+  await h.seed(page, h.atCore());
   await page.clock.runFor(100);
   var started = (await tones(page)) - before;
   await page.clock.runFor(2700);
@@ -129,7 +129,7 @@ runDrive(async function (browser, url) {
   assert.strictEqual((await tones(third)) - before, 1, "a wall hit starts one tone");
 
   before = await tones(third);
-  await h.seed(third, { bricks: [], core: { x: 780, dir: 1 }, ball: { x: 800, y: 110, vx: 0, vy: -720 } });
+  await h.seed(third, h.atCore());
   await third.clock.runFor(400);
   assert.strictEqual((await tones(third)) - before, 1, "the core hit starts one tone");
   await third.clock.runFor(700);

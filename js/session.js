@@ -13,9 +13,7 @@
     loop: 0,
     speed: BO.score.startSpeed(0),
     state: "serve",
-    bannerLeft: 0,
-    dissolveLeft: 0,
-    fade: null
+    phaseLeft: 0
   };
 
   g.snapshot = function () {
@@ -50,7 +48,6 @@
     if (p.ball) {
       Object.assign(g.s.ball, p.ball);
       g.s.serving = false;
-      g.s.ballGone = false;
       BO.hud.setState("moving");
     }
     g.speed = BO.score.speed(g.loop, g.s.broken);

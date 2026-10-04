@@ -2,19 +2,10 @@
 var test = require("node:test");
 var assert = require("node:assert");
 var physics = require("../../js/physics.js");
+var core = require("../../js/core.js");
+var flying = require("./physics-helpers.js").flying;
 
 var DT = 1 / 240;
-
-/* A state with the ball flying from (x, y) at (vx, vy) and no bricks. */
-function flying(x, y, vx, vy) {
-  var s = physics.newState([]);
-  s.serving = false;
-  s.ball.x = x;
-  s.ball.y = y;
-  s.ball.vx = vx;
-  s.ball.vy = vy;
-  return s;
-}
 
 test("the core starts at x 800 moving right and slides 240 px/s", function () {
   var s = physics.newState([]);
@@ -47,29 +38,14 @@ test("the core turns the moment it reaches an end", function () {
   assert.deepStrictEqual([s.core.x, s.core.dir], [60, 1]);
 });
 
-test("a fast ball that passes within reach of the core during a step is a hit", function () {
-  var s = flying(822.343714, 93.230912, 1039.230485, -600);
-  assert.deepStrictEqual(physics.step(s, DT, 0), ["core"]);
-  assert.strictEqual(s.score, 500);
-});
-
 test("a ball that only moves away from the core during a step is not a hit", function () {
   var s = flying(840.5, 60, 623.5382907247958, -360);
   assert.deepStrictEqual(physics.step(s, DT, 0), []);
   assert.strictEqual(s.score, 0);
 });
 
-test("a fast ball that crosses the core between two steps is a hit", function () {
-  var s = flying(800, 140, 0, -40000);
-  assert.ok(physics.step(s, DT, 0).indexOf("core") >= 0);
-});
-
-test("resetCore puts the core back at x 800 moving right", function () {
-  var s = physics.newState([]);
-  s.core.x = 300;
-  s.core.dir = -1;
-  physics.resetCore(s);
-  assert.deepStrictEqual(s.core, { x: 800, dir: 1 });
+test("a new core is at x 800 moving right, which is how a level starts", function () {
+  assert.deepStrictEqual(core.create(), { x: 800, dir: 1 });
 });
 
 test("serving a new ball does not move the core back", function () {

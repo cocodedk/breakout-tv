@@ -61,8 +61,7 @@ runDrive(async function (browser, url) {
   await checkLayout(page, "the pause dialog");
   await h.tap(page, K.P);
 
-  await h.seed(page, { bricks: [{ col: 0, row: 2, color: "R" }], core: { x: 780, dir: 1 },
-    ball: { x: 800, y: 110, vx: 0, vy: -720 } });
+  await h.seed(page, h.atCore([{ col: 0, row: 2, color: "R" }]));
   await page.clock.runFor(100);
   assert.strictEqual((await h.snap(page)).state, "dissolve");
   await checkLayout(page, "the dissolve");

@@ -1,6 +1,7 @@
 /* Breakout drive helpers: a page on Playwright's clock, synthetic keys with a forced keyCode, and
    quick reads of the game's snapshot. Time moves only when a drive calls page.clock.runFor. */
 "use strict";
+var assert = require("node:assert");
 
 var KEY = { LEFT: 37, UP: 38, RIGHT: 39, DOWN: 40, A: 65, D: 68, ENTER: 13, SPACE: 32, P: 80,
   M: 77, BACK: 10009, ESC: 27, BACKSPACE: 8 };
@@ -62,5 +63,16 @@ async function startGame(page) {
   await page.clock.runFor(50);
 }
 
+/* Asserts that actual is within tolerance of expected. */
+function near(actual, expected, tolerance, what) {
+  assert.ok(Math.abs(actual - expected) <= tolerance, what + ": " + actual + " should be " + expected + " +-" + tolerance);
+}
+
+/* A seed for a core hit: the ball just below the core's strip, flying straight up as the core slides
+   into its path, over the given bricks (none by default). */
+function atCore(bricks) {
+  return { bricks: bricks || [], core: { x: 780, dir: 1 }, ball: { x: 800, y: 110, vx: 0, vy: -720 } };
+}
+
 module.exports = { KEY: KEY, openPage: openPage, down: down, up: up, tap: tap, hold: hold,
-  snap: snap, seed: seed, text: text, startGame: startGame };
+  snap: snap, seed: seed, text: text, startGame: startGame, near: near, atCore: atCore };

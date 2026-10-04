@@ -3,19 +3,9 @@ var test = require("node:test");
 var assert = require("node:assert");
 var physics = require("../../js/physics.js");
 var levels = require("../../js/levels.js");
+var flying = require("./physics-helpers.js").flying;
 
 var DT = 1 / 240;
-
-/* A state with the ball flying from (x, y) at (vx, vy) over the given bricks. */
-function flying(x, y, vx, vy, bricks) {
-  var s = physics.newState(bricks || []);
-  s.serving = false;
-  s.ball.x = x;
-  s.ball.y = y;
-  s.ball.vx = vx;
-  s.ball.vy = vy;
-  return s;
-}
 
 function degrees(ball) {
   return Math.atan2(ball.vx, -ball.vy) * 180 / Math.PI;

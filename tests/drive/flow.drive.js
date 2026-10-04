@@ -12,11 +12,7 @@ async function loseBall(page) {
 }
 
 /* Two bricks far from the ball, which flies straight up into the core as it slides into its path. */
-var CORE_HIT = {
-  bricks: [{ col: 0, row: 2, color: "R" }, { col: 11, row: 2, color: "R" }],
-  core: { x: 780, dir: 1 },
-  ball: { x: 800, y: 110, vx: 0, vy: -720 }
-};
+var CORE_HIT = h.atCore([{ col: 0, row: 2, color: "R" }, { col: 11, row: 2, color: "R" }]);
 
 runDrive(async function (browser, url) {
   var context = await browser.newContext({ viewport: { width: 1920, height: 1080 } });

@@ -5,17 +5,10 @@ var assert = require("node:assert");
 var runDrive = require("./drive-runner.js").runDrive;
 var h = require("./drive-helpers.js");
 var K = h.KEY;
-
-function near(actual, expected, tolerance, what) {
-  assert.ok(Math.abs(actual - expected) <= tolerance, what + ": " + actual + " should be " + expected + " +-" + tolerance);
-}
+var near = h.near;
 
 /* A level with two bricks far from the ball, and the ball just below a core that moves into its path. */
-var AT_CORE = {
-  bricks: [{ col: 0, row: 2, color: "R" }, { col: 11, row: 2, color: "R" }],
-  core: { x: 780, dir: 1 },
-  ball: { x: 800, y: 110, vx: 0, vy: -720 }
-};
+var AT_CORE = h.atCore([{ col: 0, row: 2, color: "R" }, { col: 11, row: 2, color: "R" }]);
 
 /* No bricks, and the ball flying sideways far below the core. */
 function adrift(core) {
