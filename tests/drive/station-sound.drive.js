@@ -21,7 +21,7 @@ async function stationSounds(page) {
   await page.evaluate(function () { window.__notes.length = 0; });
   var before = await tones(page);
   await h.tap(page, K.SPACE);
-  await h.seed(page, { ball: { x: 100, y: 700, vx: 0, vy: 0 } });
+  await h.seed(page, { bricks: h.FAR_BRICKS, ball: { x: 100, y: 700, vx: 0, vy: 0 }, station: { x: 1140, dir: -1 } });
   await page.clock.runFor(2050);
   assert.strictEqual((await tones(page)) - before, 1, "one tone for the shot");
   await page.clock.runFor(1400);
@@ -42,6 +42,7 @@ async function stationSounds(page) {
   await h.tap(page, K.M);
   before = await tones(page);
   var score = (await h.snap(page)).score;
+  await h.seed(page, { station: { x: 1020, dir: -1 } });
   await page.clock.runFor(3000);
   assert.strictEqual((await h.snap(page)).score - score, 1000, "the next shot was fired, batted back and hit");
   assert.strictEqual((await tones(page)) - before, 0, "no tones once sound is off");

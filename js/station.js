@@ -1,5 +1,6 @@
 /* Breakout station: the battle station of level 4 that stands in for the UFO, its firing timer and the
-   bolts it sends at the paddle. One step moves the bolts, bats them back and scores. No DOM. */
+   bolts it sends at the paddle. One step slides the station, moves the bolts, bats them back, cuts bricks
+   with the returned ones and scores. No DOM. */
 (function (BO) {
   "use strict";
   var physics = BO.physics || require("./physics.js");
@@ -9,8 +10,12 @@
   var X = 800;
   var Y = 140;
   var R = 100;
-  var DISH_X = 840;
-  var DISH_Y = 100;
+  var START_DIR = 1;
+  var MIN_X = 160;
+  var MAX_X = 1440;
+  var SPEED = 80;
+  var DISH_DX = 40;
+  var DISH_DY = -40;
   var FIRST_SHOT = 2;
   var SHOT_EVERY = 3;
   var CHARGE = 0.5;
@@ -26,9 +31,16 @@
   function setup(s, level) {
     var boss = level === BOSS_LEVEL;
     s.core = boss ? null : core.create();
-    s.station = boss ? { x: X, y: Y, r: R } : null;
+    s.station = boss ? { x: X, y: Y, r: R, dir: START_DIR } : null;
     s.bolts = [];
     s.fireIn = FIRST_SHOT;
+  }
+
+  /* Slides the station along its strip, turning back as soon as it reaches an end. */
+  function move(station, dt) {
+    station.x += station.dir * SPEED * dt;
+    if (station.x >= MAX_X) { station.x = 2 * MAX_X - station.x; station.dir = -1; }
+    if (station.x <= MIN_X) { station.x = 2 * MIN_X - station.x; station.dir = 1; }
   }
 
   /* The ball was launched: the first shot comes 2 s from now. */
@@ -50,10 +62,12 @@
 
   /* A green bolt leaves the dish's centre at 600 px/s, aimed at the paddle's centre at its top. */
   function fire(s) {
-    var dx = s.paddleX + physics.PADDLE_W / 2 - DISH_X;
-    var dy = physics.PADDLE_Y - DISH_Y;
+    var x = s.station.x + DISH_DX;
+    var y = s.station.y + DISH_DY;
+    var dx = s.paddleX + physics.PADDLE_W / 2 - x;
+    var dy = physics.PADDLE_Y - y;
     var length = Math.sqrt(dx * dx + dy * dy);
-    s.bolts.push({ x: DISH_X, y: DISH_Y, vx: BOLT_SPEED * dx / length, vy: BOLT_SPEED * dy / length, back: false });
+    s.bolts.push({ x: x, y: y, vx: BOLT_SPEED * dx / length, vy: BOLT_SPEED * dy / length, back: false });
   }
 
   /* Counts down to the next shot while Moving; a shot due with 2 bolts in the air is skipped. */
@@ -74,17 +88,34 @@
       b.y + BOLT_H / 2 > physics.PADDLE_Y && b.y - BOLT_H / 2 < physics.PADDLE_Y + physics.PADDLE_H;
   }
 
+  /* A gold bolt destroys every brick its box overlaps, whatever hits it has left, and scores them as the
+     ball would. Returns true when it destroyed any. */
+  function cut(s, b) {
+    var before = s.bricks.length;
+    s.bricks = s.bricks.filter(function (k) {
+      var hit = b.x + BOLT_W / 2 > k.x && b.x - BOLT_W / 2 < k.x + k.w &&
+        b.y + BOLT_H / 2 > k.y && b.y - BOLT_H / 2 < k.y + k.h;
+      if (hit) { s.score += k.points; }
+      return !hit;
+    });
+    s.broken += before - s.bricks.length;
+    return s.bricks.length < before;
+  }
+
   function outside(b) {
     return b.x < 0 || b.x > physics.W || b.y < 0 || b.y > physics.H;
   }
 
   /* Moves every bolt. A green one meeting the paddle turns gold and flies up at the ball's angle for that
-     point of the paddle; a gold one reaching the station scores. A bolt leaving the playfield is gone. */
+     point of the paddle; a gold one cuts the bricks it touches and scores at the station. A bolt leaving
+     the playfield is gone. */
   function moveBolts(s, dt, events) {
+    var cutSome = false;
     s.bolts = s.bolts.filter(function (b) {
       b.x += b.vx * dt;
       b.y += b.vy * dt;
       if (b.back) {
+        if (cut(s, b)) { cutSome = true; }
         if (touches(s.station, b.x, b.y, 0)) {
           s.score += score.BOLT_POINTS;
           events.push("station-hit");
@@ -99,13 +130,15 @@
       }
       return !outside(b);
     });
+    if (cutSome) { events.push("cut"); }
   }
 
   /* One step after the physics step. The ball touching the station scores and ends the level: every
-     bolt goes. Returns the events, in order: "core", "station-hit", "reflect", "fire". */
+     bolt goes. Returns the events, in order: "core", "station-hit", "reflect", "cut", "fire". */
   function step(s, dt) {
     var events = [];
     if (!s.station) { return events; }
+    move(s.station, dt);
     if (!s.serving && touches(s.station, s.ball.x, s.ball.y, physics.BALL_R)) {
       s.score += score.CORE_POINTS;
       s.bolts = [];
@@ -119,7 +152,7 @@
   }
 
   BO.station = {
-    X: X, Y: Y, R: R, DISH_X: DISH_X, DISH_Y: DISH_Y, BOLT_W: BOLT_W, BOLT_H: BOLT_H,
+    X: X, Y: Y, R: R, DISH_DX: DISH_DX, DISH_DY: DISH_DY, BOLT_W: BOLT_W, BOLT_H: BOLT_H,
     FIRST_SHOT: FIRST_SHOT, SHOT_EVERY: SHOT_EVERY,
     setup: setup, arm: arm, charging: charging, touches: touches, step: step
   };

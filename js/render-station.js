@@ -48,14 +48,16 @@
 
   /* A recessed dish: a dark rim, a bowl lit on its lower right, the emitter in the middle and, while
      charging, a green glow that shows a shot is coming. */
-  function dish(ctx, charging) {
-    render.disc(ctx, st.DISH_X, st.DISH_Y, DISH_R, PANEL);
-    render.disc(ctx, st.DISH_X, st.DISH_Y, DISH_INNER_R + 2, DISH_SHADOW);
-    render.disc(ctx, st.DISH_X + 2, st.DISH_Y + 2, DISH_INNER_R, DISH_INNER);
-    render.disc(ctx, st.DISH_X, st.DISH_Y, 3, TRENCH);
+  function dish(ctx, s, charging) {
+    var x = s.x + st.DISH_DX;
+    var y = s.y + st.DISH_DY;
+    render.disc(ctx, x, y, DISH_R, PANEL);
+    render.disc(ctx, x, y, DISH_INNER_R + 2, DISH_SHADOW);
+    render.disc(ctx, x + 2, y + 2, DISH_INNER_R, DISH_INNER);
+    render.disc(ctx, x, y, 3, TRENCH);
     if (charging) {
-      render.disc(ctx, st.DISH_X, st.DISH_Y, CHARGE_R * 2 + 2, GLOW.green);
-      render.disc(ctx, st.DISH_X, st.DISH_Y, CHARGE_R, GREEN);
+      render.disc(ctx, x, y, CHARGE_R * 2 + 2, GLOW.green);
+      render.disc(ctx, x, y, CHARGE_R, GREEN);
     }
   }
 
@@ -70,7 +72,7 @@
     ctx.clip();
     surface(ctx, s);
     ctx.restore();
-    dish(ctx, charging);
+    dish(ctx, s, charging);
   }
 
   /* Each bolt is a 6x28 rounded bar in a soft glow, turned to lie along its direction of travel:

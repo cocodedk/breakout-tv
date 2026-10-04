@@ -100,11 +100,11 @@
   /* Reacts to one step's events. Returns true when the step loop must stop. */
   function react(events) {
     sound.playEvents(events);
-    if (events.indexOf("lost") >= 0) { lose(); return true; }
-    if (events.indexOf("brick") >= 0) {
+    if (events.indexOf("brick") >= 0 || events.indexOf("cut") >= 0) {
       g.speed = score.speed(g.loop, g.s.broken);
       physics.setSpeed(g.s.ball, g.speed);
     }
+    if (events.indexOf("lost") >= 0) { lose(); return true; }
     if (events.indexOf("core") >= 0) { phases.dissolve(); return true; }
     return false;
   }

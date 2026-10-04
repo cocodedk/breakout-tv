@@ -78,6 +78,19 @@ test("the station is a rimmed hull, then shading, trench, lines and panels insid
   assert.strictEqual(ops.filter(function (o) { return o[0] === "clip"; }).length, 1, "one clip only");
 });
 
+test("the whole station, dish and glow included, moves with its centre", function () {
+  [false, true].forEach(function (charging) {
+    var at800 = JSON.stringify(draw(level4(charging)));
+    var s = level4(charging);
+    s.station.x = 500;
+    var at500 = draw(s);
+    var moved = JSON.stringify(at500);
+    assert.notStrictEqual(moved, at800);
+    assert.ok(moved.indexOf("[540,100,26,0,6.283185307179586]") > 0, "the dish is 40 right and 40 above the centre");
+    assert.strictEqual(at500.filter(function (o) { return o[0] === "clip"; })[0][1][0][0], 500);
+  });
+});
+
 test("the green dot shows in the dish only while charging", function () {
   var dot = ["fill", "#4be38e", disc(840, 100, 6), []];
   assert.deepStrictEqual(draw(level4(true))[32], dot);
