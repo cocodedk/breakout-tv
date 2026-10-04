@@ -13,7 +13,8 @@
     loop: 0,
     speed: BO.score.startSpeed(0),
     state: "serve",
-    phaseLeft: 0
+    phaseLeft: 0,
+    levelStartScore: 0
   };
 
   g.snapshot = function () {
@@ -24,6 +25,7 @@
       state: playing ? g.state : null,
       dialog: BO.screens.dialog(),
       score: g.s.score,
+      levelStartScore: g.levelStartScore,
       lives: g.lives,
       level: g.level,
       loop: g.loop,
@@ -34,10 +36,11 @@
     };
   };
 
-  /* Sets up a game for the drives: any of score, lives, level, loop, bricks [{col, row, color}],
+  /* Sets up a game for the drives: any of score, levelStartScore, lives, level, loop, bricks [{col, row, color}],
      core {x, dir} and ball {x, y, vx, vy} (which sends the ball flying). */
   g.seed = function (p) {
     if (p.score !== undefined) { g.s.score = p.score; }
+    if (p.levelStartScore !== undefined) { g.levelStartScore = p.levelStartScore; }
     if (p.lives !== undefined) { g.lives = p.lives; }
     if (p.level !== undefined) { g.level = p.level; }
     if (p.loop !== undefined) { g.loop = p.loop; }
