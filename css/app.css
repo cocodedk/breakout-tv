@@ -18,12 +18,14 @@ html, body {
 .screen p, .screen h1 { margin: 0 160px; text-align: center; }
 
 #title-name {
-  padding-top: 380px;
+  padding-top: 260px;
   font-size: 160px;
   letter-spacing: 12px;
 }
 
 #title-start { margin-top: 24px; font-size: 48px; color: #ffd447; }
+#title-level { margin-top: 24px; font-size: 48px; white-space: pre; }
+#title-level-text { color: #ffd447; }
 #title-best { margin-top: 24px; font-size: 36px; }
 .screen .control { margin-top: 12px; font-size: 32px; }
 .screen .control.first { margin-top: 40px; }
