@@ -6,6 +6,7 @@ var assert = require("node:assert");
 var runDrive = require("./drive-runner.js").runDrive;
 var h = require("./drive-helpers.js");
 var installShim = require("./audio-shim.js").installShim;
+var envelope = require("./audio-shim.js").envelope;
 var K = h.KEY;
 
 /* Every source the page has started so far (oscillators and noise sources). */
@@ -45,12 +46,6 @@ async function coreHit(page) {
   var started = (await tones(page)) - before;
   await page.clock.runFor(2700);
   return started;
-}
-
-/* A gain curve with the 5 ms attack and release: [set 0, ramp to peak, set peak, ramp to 0]. */
-function envelope(peak, start, end) {
-  function r(x) { return Math.round(x * 1e6) / 1e6; }
-  return [["set", 0, start], ["ramp", peak, r(start + 0.005)], ["set", peak, r(end - 0.005)], ["ramp", 0, end]];
 }
 
 /* The four layers of the UFO hit, each once and at its time, from the notes the shim recorded. */

@@ -6,8 +6,10 @@ require("../../js/score.js");
 require("../../js/levels.js");
 require("../../js/core.js");
 require("../../js/physics.js");
+require("../../js/station.js");
 global.window = { BO: BO };
 require("../../js/render.js");
+require("../../js/render-station.js");
 
 /* A canvas context that records the fills: the colour, the opacity and the shape of each. */
 function recorder() {

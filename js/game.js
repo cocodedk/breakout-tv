@@ -6,7 +6,7 @@
   var physics = BO.physics;
   var score = BO.score;
   var levels = BO.levels;
-  var core = BO.core;
+  var station = BO.station;
   var screens = BO.screens;
   var sound = BO.sound;
   var store = BO.store;
@@ -46,7 +46,7 @@
     g.lives = g.START_LIVES;
     g.s.bricks = levels.build(g.level);
     g.s.broken = 0;
-    g.s.core = core.create();
+    station.setup(g.s, g.level);
     g.speed = score.speed(g.loop, 0);
     physics.serve(g.s);
     setState("serve");
@@ -74,6 +74,7 @@
   function launch() {
     if (g.state !== "serve") { return; }
     physics.launch(g.s, g.speed);
+    station.arm(g.s);
     setState("moving");
   }
 
@@ -98,13 +99,12 @@
 
   /* Reacts to one step's events. Returns true when the step loop must stop. */
   function react(events) {
+    sound.playEvents(events);
     if (events.indexOf("lost") >= 0) { lose(); return true; }
     if (events.indexOf("brick") >= 0) {
       g.speed = score.speed(g.loop, g.s.broken);
       physics.setSpeed(g.s.ball, g.speed);
     }
-    var tone = ["core", "brick", "paddle", "wall"].filter(function (e) { return events.indexOf(e) >= 0; })[0];
-    if (tone) { sound.play(tone); }
     if (events.indexOf("core") >= 0) { phases.dissolve(); return true; }
     return false;
   }
@@ -115,7 +115,7 @@
     acc += dt;
     while (acc >= STEP - 1e-9) {
       acc -= STEP;
-      var events = physics.step(g.s, STEP, hold.dir(t - acc * 1000));
+      var events = physics.step(g.s, STEP, hold.dir(t - acc * 1000)).concat(station.step(g.s, STEP));
       if (events.length && react(events)) { acc = 0; return; }
     }
   }

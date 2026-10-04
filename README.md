@@ -14,10 +14,13 @@ namespace, no bundler, no framework and no runtime packages.
 
 ## Features
 
-- Three walls of thin bricks: a full wall, a checkerboard, and a pyramid under two rows of silver
-  bricks that take two hits. After level 3 they come round again, with the ball starting faster.
+- Four walls of thin bricks: a full wall, a checkerboard, a pyramid under two rows of silver
+  bricks that take two hits, and a grey wall for the battle station. After level 4 they come round
+  again, with the ball starting faster.
 - Behind each wall a UFO with rainbow-shifting lights slides left and right. Hit it and the rest of
   the wall dissolves and the next level starts: you don't have to clear every brick.
+- Level 4 has no UFO: a grey battle station fires bolts at the paddle. Bat one back and it scores
+  1000 points when it hits the station. After level 4 the levels come round again, faster.
 - 10 lives a level, and when you hit the UFO the whole score is multiplied by the lives you have
   left.
 - Game over offers a retry of the level you lost (with the score it started with), a fresh start

@@ -77,6 +77,17 @@ function atCore(bricks) {
   return { bricks: bricks || [], core: { x: 780, dir: 1 }, ball: { x: 800, y: 110, vx: 0, vy: -720 } };
 }
 
+/* A seed for a station hit on level 4: the ball just below the station, flying straight up at it. */
+function atStation(bricks) {
+  return { bricks: bricks || [], ball: { x: 800, y: 300, vx: 0, vy: -720 } };
+}
+
+/* Gets to level 4 the way a player does: a UFO hit on level 3, the dissolve, the banner and the new wall. */
+async function toLevel4(page) {
+  await seed(page, Object.assign({ level: 3 }, atCore(FAR_BRICKS)));
+  await page.clock.runFor(2800);
+}
+
 module.exports = { KEY: KEY, openPage: openPage, down: down, up: up, tap: tap, hold: hold,
   snap: snap, seed: seed, text: text, startGame: startGame, near: near, atCore: atCore,
-  FAR_BRICKS: FAR_BRICKS };
+  atStation: atStation, toLevel4: toLevel4, FAR_BRICKS: FAR_BRICKS };

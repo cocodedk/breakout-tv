@@ -1,4 +1,5 @@
-/* Breakout drive: losing the ball, game over, hitting the core, and leaving from the title. */
+/* Breakout drive: losing the ball, game over, hitting the core, the levels in order up to the station and
+   round again, and leaving from the title. */
 "use strict";
 var assert = require("node:assert");
 var runDrive = require("./drive-runner.js").runDrive;
@@ -98,8 +99,13 @@ runDrive(async function (browser, url) {
   assert.ok(!(await page.isVisible("#play-banner")));
   assert.strictEqual(await h.text(page, "#hud-level"), "Level 2");
 
-  // After level 3, level 1 comes back with the loop count up.
-  await h.seed(page, Object.assign({ level: 3 }, CORE_HIT));
+  // After level 3 comes level 4, the battle station, with its own wall.
+  await h.toLevel4(page);
+  snap = await h.snap(page);
+  assert.deepStrictEqual([snap.state, snap.level, snap.loop, snap.bricksLeft], ["serve", 4, 0, 136]);
+
+  // After level 4, level 1 comes back with the loop count up.
+  await h.seed(page, h.atStation(h.FAR_BRICKS));
   await page.clock.runFor(2800);
   snap = await h.snap(page);
   assert.deepStrictEqual([snap.state, snap.level, snap.loop, snap.bricksLeft], ["serve", 1, 1, 120]);

@@ -43,7 +43,7 @@
     enter("dissolve");
   }
 
-  /* After the dissolve: the wall is gone, and the next level, repeating faster after level 3, shows
+  /* After the dissolve: the wall is gone, and the next level, repeating faster after level 4, shows
      its name in a banner. */
   function clear() {
     g.s.bricks = [];

@@ -1,4 +1,4 @@
-/* Breakout sound: the UFO hit, four layers (zap, boom, thump, warble) on sound.js's context. */
+/* Breakout sound: the UFO hit, four layers (zap, boom, thump, warble), and the station hit, on sound.js's context. */
 (function (BO) {
   "use strict";
   var NOISE_SECONDS = 0.5;
@@ -29,16 +29,17 @@
     return osc;
   }
 
-  function boom(ctx, t, track) {
+  /* The noise buffer through a low-pass filter falling from one cutoff to another between start and end. */
+  function burst(ctx, track, from, to, start, end, peak) {
     var source = ctx.createBufferSource();
     var filter = ctx.createBiquadFilter();
     source.buffer = noise;
     filter.type = "lowpass";
-    filter.frequency.setValueAtTime(2000, t + 0.1);
-    filter.frequency.linearRampToValueAtTime(200, t + 0.5);
+    filter.frequency.setValueAtTime(from, start);
+    filter.frequency.linearRampToValueAtTime(to, end);
     source.connect(filter);
-    filter.connect(BO.sound.envelope(t + 0.1, t + 0.5, 0.25));
-    begin(source, t + 0.1, t + 0.5, track);
+    filter.connect(BO.sound.envelope(start, end, peak));
+    begin(source, start, end, track);
   }
 
   /* The falling sine whose pitch wobbles by 40 Hz, twelve times a second, from an oscillator on its frequency. */
@@ -55,10 +56,17 @@
 
   function play(ctx, t, track) {
     tone(ctx, track, "square", 1800, 200, t, t + 0.15, 0.15);
-    boom(ctx, t, track);
+    burst(ctx, track, 2000, 200, t + 0.1, t + 0.5, 0.25);
     tone(ctx, track, "sine", 120, 40, t + 0.1, t + 0.4, 0.25);
     warble(ctx, t, track);
   }
 
+  /* A returned bolt hitting the station: a short noise burst with a falling sine under it. */
+  function stationHit(ctx, t, track) {
+    burst(ctx, track, 3000, 300, t, t + 0.2, 0.2);
+    tone(ctx, track, "sine", 200, 80, t, t + 0.25, 0.2);
+  }
+
   BO.sound.extend("core", { setup: setup, play: play });
+  BO.sound.extend("station-hit", { setup: function () { /* uses the UFO's noise buffer */ }, play: stationHit });
 })(window.BO);
