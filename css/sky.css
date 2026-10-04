@@ -1,0 +1,40 @@
+/* Breakout: the sky canvas behind every screen, and the twinkling stars just above it. */
+#sky {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1920px;
+  height: 1080px;
+}
+
+.twinkle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #ffffff;
+  opacity: 0.6;
+  animation: twinkle 3s ease-in-out infinite;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.15; }
+  50% { opacity: 1; }
+}
+
+.twinkle:nth-of-type(1) { left: 130px; top: 90px; animation-duration: 2.4s; }
+.twinkle:nth-of-type(2) { left: 560px; top: 640px; animation-duration: 2.6s; }
+.twinkle:nth-of-type(3) { left: 910px; top: 130px; animation-duration: 2.9s; }
+.twinkle:nth-of-type(4) { left: 1330px; top: 520px; animation-duration: 3.1s; }
+.twinkle:nth-of-type(5) { left: 1790px; top: 210px; animation-duration: 3.3s; }
+.twinkle:nth-of-type(6) { left: 260px; top: 940px; animation-duration: 3.5s; }
+.twinkle:nth-of-type(7) { left: 740px; top: 380px; animation-duration: 3.7s; }
+.twinkle:nth-of-type(8) { left: 1120px; top: 980px; animation-duration: 3.9s; }
+.twinkle:nth-of-type(9) { left: 1610px; top: 760px; animation-duration: 4.1s; }
+.twinkle:nth-of-type(10) { left: 60px; top: 480px; animation-duration: 4.3s; }
+.twinkle:nth-of-type(11) { left: 1450px; top: 60px; animation-duration: 4.5s; }
+.twinkle:nth-of-type(12) { left: 1860px; top: 1000px; animation-duration: 4.8s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .twinkle { animation: none; opacity: 0.6; }
+}

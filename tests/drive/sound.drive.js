@@ -1,51 +1,14 @@
 /* Breakout drive: with Web Audio replaced by a recording shim, a paddle hit, a brick hit and a lost
-   ball each start one tone; after M none do, "Sound off" shows, and the setting survives a reload. */
+   ball each start one tone; a UFO hit starts its four layers; after M none do, "Sound off" shows,
+   and the setting survives a reload. */
 "use strict";
 var assert = require("node:assert");
 var runDrive = require("./drive-runner.js").runDrive;
 var h = require("./drive-helpers.js");
+var installShim = require("./audio-shim.js").installShim;
 var K = h.KEY;
 
-/* Runs before the page's own scripts: counts every oscillator that is started. */
-function installShim() {
-  window.__tones = 0;
-  window.__stops = [];
-  window.__notes = [];
-  /* Records every call made on the parameter, as [name, value, time]. */
-  function param() {
-    var p = { calls: [] };
-    p.setValueAtTime = function (v, t) { p.calls.push(["set", v, t]); };
-    p.linearRampToValueAtTime = function (v, t) { p.calls.push(["ramp", v, t]); };
-    return p;
-  }
-  function FakeAudioContext() {
-    this.currentTime = 0;
-    this.state = "running";
-    this.destination = {};
-  }
-  FakeAudioContext.prototype.resume = function () { return Promise.resolve(); };
-  FakeAudioContext.prototype.createGain = function () {
-    return { gain: param(), connect: function () {} };
-  };
-  FakeAudioContext.prototype.createOscillator = function () {
-    var osc = {
-      frequency: param(),
-      connect: function (node) { osc.node = node; },
-      start: function (t) {
-        window.__tones += 1;
-        osc.note = { type: osc.type, start: t, freq: osc.frequency.calls, gain: osc.node.gain.calls };
-        window.__notes.push(osc.note);
-      },
-      stop: function (t) {
-        window.__stops.push(t);
-        if (osc.note && t > 0) { osc.note.end = t; }
-      }
-    };
-    return osc;
-  };
-  window.AudioContext = FakeAudioContext;
-}
-
+/* Every source the page has started so far (oscillators and noise sources). */
 function tones(page) {
   return page.evaluate(function () { return window.__tones; });
 }
@@ -73,7 +36,7 @@ async function playThree(page) {
   return counts;
 }
 
-/* Hits the core and returns the tones started in the 100 ms after; then waits out the dissolve and
+/* Hits the core and returns the sources started in the 100 ms after; then waits out the dissolve and
    the level banner. */
 async function coreHit(page) {
   var before = await tones(page);
@@ -82,6 +45,39 @@ async function coreHit(page) {
   var started = (await tones(page)) - before;
   await page.clock.runFor(2700);
   return started;
+}
+
+/* A gain curve with the 5 ms attack and release: [set 0, ramp to peak, set peak, ramp to 0]. */
+function envelope(peak, start, end) {
+  function r(x) { return Math.round(x * 1e6) / 1e6; }
+  return [["set", 0, start], ["ramp", peak, r(start + 0.005)], ["set", peak, r(end - 0.005)], ["ramp", 0, end]];
+}
+
+/* The four layers of the UFO hit, each once and at its time, from the notes the shim recorded. */
+function checkLayers(notes) {
+  assert.strictEqual(notes.length, 5, "zap, boom, thump, warble and the warble's wobble");
+  var zap = notes[0];
+  assert.deepStrictEqual([zap.kind, zap.type, zap.start, zap.end], ["osc", "square", 0, 0.15]);
+  assert.deepStrictEqual(zap.freq, [["set", 1800, 0], ["ramp", 200, 0.15]]);
+  assert.deepStrictEqual(zap.gain, envelope(0.15, 0, 0.15));
+
+  var boom = notes[1];
+  assert.deepStrictEqual([boom.kind, boom.start, boom.end], ["noise", 0.1, 0.5]);
+  assert.deepStrictEqual(boom.filter, { type: "lowpass", cutoff: [["set", 2000, 0.1], ["ramp", 200, 0.5]] });
+  assert.deepStrictEqual(boom.gain, envelope(0.25, 0.1, 0.5));
+
+  var thump = notes[2];
+  assert.deepStrictEqual([thump.kind, thump.type, thump.start, thump.end], ["osc", "sine", 0.1, 0.4]);
+  assert.deepStrictEqual(thump.freq, [["set", 120, 0.1], ["ramp", 40, 0.4]]);
+  assert.deepStrictEqual(thump.gain, envelope(0.25, 0.1, 0.4));
+
+  var warble = notes[3];
+  assert.deepStrictEqual([warble.kind, warble.type, warble.start, warble.end], ["osc", "sine", 0.35, 0.95]);
+  assert.deepStrictEqual(warble.freq, [["set", 900, 0.35], ["ramp", 300, 0.95]]);
+  assert.deepStrictEqual(warble.gain, envelope(0.12, 0.35, 0.95));
+  assert.deepStrictEqual(warble.wobble, { rate: [["set", 12, 0.35]], depth: [["set", 40, 0.35]] },
+    "an oscillator of 12 Hz and a depth of 40 Hz drives the warble's frequency");
+  assert.strictEqual(notes[4].lfo, true);
 }
 
 runDrive(async function (browser, url) {
@@ -93,14 +89,11 @@ runDrive(async function (browser, url) {
   assert.ok(!(await page.isVisible("#hud-sound")), "sound is on at first");
   assert.deepStrictEqual(await playThree(page), [1, 1, 1], "each event starts one tone");
   await page.evaluate(function () { window.__notes.length = 0; });
-  assert.strictEqual(await coreHit(page), 1, "a core hit starts the core tone once");
-  var notes = await page.evaluate(function () { return window.__notes; });
-  var core = notes[0];
-  assert.strictEqual(core.type, "sine");
-  assert.deepStrictEqual(core.freq, [["set", 300, 0], ["ramp", 1200, 0.5]], "a sweep from 300 to 1200 Hz over 500 ms");
-  assert.strictEqual(core.end, 0.5);
-  assert.deepStrictEqual(core.gain, [["set", 0, 0], ["ramp", 0.2, 0.005], ["set", 0.2, 0.495], ["ramp", 0, 0.5]],
-    "peak gain 0.2 with 5 ms attack and release");
+  assert.strictEqual(await coreHit(page), 5, "a core hit starts its layers once");
+  var notes = await page.evaluate(function () { return window.__notes.slice(0, 5); });
+  checkLayers(notes);
+  var buffers = await page.evaluate(function () { return window.__buffers; });
+  assert.deepStrictEqual(buffers, [{ length: 4000, rate: 8000 }], "one 0.5 s noise buffer, made once");
 
   await h.tap(page, K.M);
   assert.ok(await page.isVisible("#hud-sound"));
@@ -120,7 +113,7 @@ runDrive(async function (browser, url) {
   assert.deepStrictEqual(again.errors, []);
   await again.close();
 
-  // The wall, level-clear and game-over sounds.
+  // The wall, UFO-hit, level-clear and game-over sounds.
   var third = await h.openPage(context, url);
   await h.startGame(third);
   var before = await tones(third);
@@ -131,14 +124,14 @@ runDrive(async function (browser, url) {
   before = await tones(third);
   await h.seed(third, h.atCore());
   await third.clock.runFor(400);
-  assert.strictEqual((await tones(third)) - before, 1, "the core hit starts one tone");
+  assert.strictEqual((await tones(third)) - before, 5, "the core hit starts its five sources");
   await third.clock.runFor(700);
-  assert.strictEqual((await tones(third)) - before, 4, "the end of the dissolve sounds three rising notes");
+  assert.strictEqual((await tones(third)) - before, 8, "the end of the dissolve sounds three rising notes");
   await h.tap(third, K.M);
   var cancelled = await third.evaluate(function () {
     return window.__stops.filter(function (t) { return t === 0; }).length;
   });
-  assert.ok(cancelled >= 3, "muting cancels the notes already scheduled");
+  assert.ok(cancelled >= 8, "muting cancels the layers and the notes already scheduled");
   await h.tap(third, K.M);
   await third.clock.runFor(1500);
 

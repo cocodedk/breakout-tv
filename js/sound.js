@@ -11,11 +11,12 @@
     brick: [["square", 660, 660, 0.05]],
     wall: [["square", 330, 330, 0.04]],
     lost: [["sawtooth", 400, 100, 0.4]],
-    core: [["sine", 300, 1200, 0.5]],
     cleared: [["square", 523, 523, 0.12], ["square", 659, 659, 0.12], ["square", 784, 784, 0.12]],
     over: [["square", 392, 392, 0.25], ["square", 262, 262, 0.25]]
   };
 
+  /* Layered sounds from other files, by name: { setup(ctx) once the context exists, play(ctx, t, track) }. */
+  var layered = {};
   var ctx = null;
   var playing = [];
   var on = BO.store.get(SOUND_KEY) !== "off";
@@ -27,29 +28,40 @@
         var Context = window.AudioContext || window.webkitAudioContext;
         if (!Context) { return; }
         ctx = new Context();
+        Object.keys(layered).forEach(function (name) { layered[name].setup(ctx); });
       }
       var resumed = ctx.resume();
       if (resumed && resumed.catch) { resumed.catch(function () { /* stays suspended */ }); }
     } catch (e) { /* no Web Audio: the game runs silently */ }
   }
 
-  /* Plays one note starting at t and returns when it ends. The 5 ms ramps stop clicks. */
+  /* A gain node into the speakers: up to `peak` in 5 ms at t, back to silence by `end`. The ramps stop clicks. */
+  function envelope(t, end, peak) {
+    var gain = ctx.createGain();
+    gain.gain.setValueAtTime(0, t);
+    gain.gain.linearRampToValueAtTime(peak, t + EDGE);
+    gain.gain.setValueAtTime(peak, end - EDGE);
+    gain.gain.linearRampToValueAtTime(0, end);
+    gain.connect(ctx.destination);
+    return gain;
+  }
+
+  /* Remembers a source until `end`, so that muting can stop it. */
+  function track(source, end) {
+    playing.push({ osc: source, end: end });
+  }
+
+  /* Plays one note starting at t and returns when it ends. */
   function note(spec, t) {
     var osc = ctx.createOscillator();
-    var gain = ctx.createGain();
     var end = t + spec[3];
     osc.type = spec[0];
     osc.frequency.setValueAtTime(spec[1], t);
     if (spec[2] !== spec[1]) { osc.frequency.linearRampToValueAtTime(spec[2], end); }
-    gain.gain.setValueAtTime(0, t);
-    gain.gain.linearRampToValueAtTime(PEAK, t + EDGE);
-    gain.gain.setValueAtTime(PEAK, end - EDGE);
-    gain.gain.linearRampToValueAtTime(0, end);
-    osc.connect(gain);
-    gain.connect(ctx.destination);
+    osc.connect(envelope(t, end, PEAK));
     osc.start(t);
     osc.stop(end);
-    playing.push({ osc: osc, end: end });
+    track(osc, end);
     return end;
   }
 
@@ -59,7 +71,11 @@
     try {
       var t = ctx.currentTime + (delay || 0);
       playing = playing.filter(function (p) { return p.end > ctx.currentTime; });
-      TONES[name].forEach(function (spec) { t = note(spec, t); });
+      if (layered[name]) {
+        layered[name].play(ctx, t, track);
+      } else {
+        TONES[name].forEach(function (spec) { t = note(spec, t); });
+      }
     } catch (e) { /* a broken audio device must not stop the game */ }
   }
 
@@ -78,5 +94,8 @@
     return on;
   }
 
-  BO.sound = { unlock: unlock, play: play, toggle: toggle, isOn: function () { return on; } };
+  BO.sound = {
+    unlock: unlock, play: play, toggle: toggle, isOn: function () { return on; },
+    envelope: envelope, extend: function (name, sound) { layered[name] = sound; }
+  };
 })(window.BO);

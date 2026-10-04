@@ -1,7 +1,6 @@
-/* Breakout canvas: draws the bricks, the UFO, the paddle and the ball. */
+/* Breakout canvas: draws the bricks, the UFO, the paddle and the ball on a see-through playfield. */
 (function (BO) {
   "use strict";
-  var BACKGROUND = "#070b1e";
   var SILVER_HIT = "#7d869a";
   var RADIUS = 6;
   var LIGHTS = 5;
@@ -67,10 +66,9 @@
     }
   }
 
-  /* Paints the whole playfield from the physics state and the view: { fade, ballHidden, hue }. */
+  /* Clears and paints the whole playfield from the physics state and the view: { fade, ballHidden, hue }. */
   function draw(ctx, s, view) {
-    ctx.fillStyle = BACKGROUND;
-    ctx.fillRect(0, 0, physics.W, physics.H);
+    ctx.clearRect(0, 0, physics.W, physics.H);
     drawBricks(ctx, s.bricks, view.fade);
     drawCore(ctx, s.core, view.hue);
     ctx.fillStyle = "#ffffff";
