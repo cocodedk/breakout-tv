@@ -1,4 +1,4 @@
-/* Breakout drive: the gold core slides at 240 px/s and turns at the ends, stands still under a dialog,
+/* Breakout drive: the UFO core slides at 240 px/s and turns at the ends, stands still under a dialog,
    and a hit on it dissolves the wall, shows the next level's banner and then its wall. */
 "use strict";
 var assert = require("node:assert");

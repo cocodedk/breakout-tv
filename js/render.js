@@ -1,10 +1,10 @@
-/* Breakout canvas: draws the bricks, the core, the paddle and the ball. */
+/* Breakout canvas: draws the bricks, the UFO, the paddle and the ball. */
 (function (BO) {
   "use strict";
   var BACKGROUND = "#070b1e";
   var SILVER_HIT = "#7d869a";
   var RADIUS = 6;
-  var GLOW_R = 44;
+  var LIGHTS = 5;
   var physics = BO.physics;
 
   function roundRect(ctx, x, y, w, h, r) {
@@ -45,18 +45,34 @@
     if (fade > 0) { ctx.globalAlpha = 1; }
   }
 
-  function drawCore(ctx, core) {
-    disc(ctx, core.x, BO.core.Y, GLOW_R, "rgba(255, 212, 71, 0.25)");
-    disc(ctx, core.x, BO.core.Y, BO.core.R, "#ffd447");
-    disc(ctx, core.x, BO.core.Y, BO.core.R / 2, "#fff1b0");
+  function ellipse(ctx, x, y, rx, ry, color) {
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2);
+    ctx.fill();
   }
 
-  /* Paints the whole playfield from the physics state and the view: { fade, ballHidden }. */
+  /* The UFO: glow, hull, dome and five lights, in the colours of the hue (degrees) it is given. */
+  function drawCore(ctx, core, hue) {
+    var x = core.x;
+    ellipse(ctx, x, 60, 60, 26, "hsla(" + hue + ", 90%, 60%, 0.25)");
+    ellipse(ctx, x, 64, 44, 12, "hsl(" + hue + ", 90%, 60%)");
+    ctx.fillStyle = "rgba(200, 240, 255, 0.85)";
+    ctx.beginPath();
+    ctx.arc(x, 56, 18, Math.PI, Math.PI * 2);
+    ctx.closePath();
+    ctx.fill();
+    for (var i = 0; i < LIGHTS; i++) {
+      disc(ctx, x + (i - 2) * 15, 66, 4, "hsl(" + (hue + 72 * i) % 360 + ", 90%, 60%)");
+    }
+  }
+
+  /* Paints the whole playfield from the physics state and the view: { fade, ballHidden, hue }. */
   function draw(ctx, s, view) {
     ctx.fillStyle = BACKGROUND;
     ctx.fillRect(0, 0, physics.W, physics.H);
     drawBricks(ctx, s.bricks, view.fade);
-    drawCore(ctx, s.core);
+    drawCore(ctx, s.core, view.hue);
     ctx.fillStyle = "#ffffff";
     roundRect(ctx, s.paddleX, physics.PADDLE_Y, physics.PADDLE_W, physics.PADDLE_H, RADIUS);
     if (!view.ballHidden) { disc(ctx, s.ball.x, s.ball.y, physics.BALL_R, "#ffffff"); }
