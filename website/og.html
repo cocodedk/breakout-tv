@@ -1,5 +1,6 @@
 <!doctype html>
-<!-- Source for og.png (1200x630). Render: node scripts via Playwright, see the repo notes. Same palette and type as the site. -->
+<!-- Source for og.png (1200x630): serve website/ and screenshot this page at 1200x630 with Playwright.
+     Same palette, type and TV frame as the site, around a real screenshot of the game. -->
 <html lang="en">
 <head>
 <meta charset="utf-8" />
@@ -11,38 +12,40 @@
   * { box-sizing: border-box; margin: 0; }
   html, body { width: 1200px; height: 630px; overflow: hidden; background: #070b1e; }
   body { position: relative; font-family: "Hanken Grotesk", system-ui, sans-serif; color: #eef1ff; }
-  body::after { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(0deg, rgba(0,0,0,.12) 0 1px, transparent 1px 4px); box-shadow: inset 0 0 160px rgba(0,0,0,.6); }
-  .wall { position: absolute; left: 48px; right: 48px; top: 40px; display: flex; flex-direction: column; gap: 8px; }
-  .row { display: flex; gap: 8px; }
-  .row i { flex: 1; height: 34px; border-radius: 5px; background: var(--c); }
-  .row i.gone { visibility: hidden; }
-  .r1 { --c: #ff5a4a; } .r2 { --c: #ffaa3c; } .r3 { --c: #ffd447; } .r4 { --c: #4be38e; } .r5 { --c: #5aa9ff; }
-  .title { position: absolute; left: 52px; top: 270px; font: 400 164px/1 "Bungee", "Arial Black", sans-serif; letter-spacing: .01em; }
-  .tag { position: absolute; left: 56px; top: 438px; font: 800 44px/1.1 "Hanken Grotesk", sans-serif; }
-  .keys { position: absolute; left: 56px; top: 506px; display: flex; align-items: center; gap: 12px; font: 600 26px/1 "Hanken Grotesk", sans-serif; color: #a8b3de; }
-  kbd { display: inline-flex; align-items: center; justify-content: center; min-width: 52px; height: 52px; padding: 0 16px; border: 1px solid #3a4677; border-bottom-width: 5px; border-radius: 10px; background: #1a2350; color: #eef1ff; font: 800 26px/1 "Hanken Grotesk", sans-serif; }
+  .strip { position: absolute; left: 0; right: 0; bottom: 0; height: 14px; display: flex; gap: 6px; }
+  .strip i { flex: 1; border-radius: 3px 3px 0 0; background: var(--c); }
+  .copy { position: absolute; left: 56px; top: 64px; width: 460px; }
+  .wm { font: 400 86px/1 "Bungee", "Arial Black", sans-serif; text-shadow: 0 6px 0 #2b1a4f; }
+  .sub { margin-top: 14px; font: 800 38px/1.15 "Hanken Grotesk", sans-serif; }
+  .tag { margin-top: 30px; font: 600 27px/1.4 "Hanken Grotesk", sans-serif; color: #a8b3de; }
+  .tag b { color: #ffd447; font-weight: 800; }
+  .keys { margin-top: 30px; display: flex; align-items: center; gap: 10px; font: 600 22px/1 "Hanken Grotesk", sans-serif; color: #a8b3de; }
+  kbd { display: inline-flex; align-items: center; justify-content: center; min-width: 46px; height: 46px; padding: 0 14px; border: 1px solid #3a4677; border-bottom-width: 5px; border-radius: 10px; background: #1a2350; color: #eef1ff; font: 800 22px/1 "Hanken Grotesk", sans-serif; }
   kbd.round { border-radius: 999px; background: #263063; border-color: #4a5690; }
-  .keys span { margin: 0 14px 0 2px; }
-  .by { position: absolute; left: 56px; bottom: 24px; font: 600 22px/1 "Hanken Grotesk", sans-serif; color: #a8b3de; }
-  svg { position: absolute; inset: 0; }
+  .keys span { margin: 0 8px 0 2px; }
+  .by { position: absolute; left: 56px; bottom: 40px; font: 600 20px/1 "Hanken Grotesk", sans-serif; color: #a8b3de; }
+  .set { position: absolute; left: 568px; top: 110px; width: 600px; isolation: isolate; }
+  .set::before { content: ""; position: absolute; z-index: -1; left: -4%; right: -4%; top: 0; bottom: 12%; border-radius: 40%;
+    background: linear-gradient(90deg, #ff5a4a, #ffaa3c, #ffd447, #4be38e, #5aa9ff, #b77bff); opacity: .55; filter: blur(44px); }
+  .tv { padding: 12px; border-radius: 20px; background: linear-gradient(#232d5e, #10173a); box-shadow: 0 0 0 2px #2f3a74, 0 30px 60px rgba(0, 0, 0, .6); }
+  .tv img { display: block; width: 100%; height: auto; border-radius: 8px; }
+  .stand { width: 30%; height: 34px; margin: 0 auto; position: relative; }
+  .stand::before { content: ""; position: absolute; left: 42%; right: 42%; top: 0; height: 22px; background: #1a2350; }
+  .stand::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 12px; border-radius: 6px 6px 3px 3px; background: #1c244f; }
 </style>
 </head>
 <body>
-<div class="wall">
-  <div class="row r1"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-  <div class="row r2"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-  <div class="row r3"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="gone"></i></div>
-  <div class="row r4"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="gone"></i><i class="gone"></i></div>
-  <div class="row r5"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="gone"></i><i class="gone"></i><i class="gone"></i></div>
+<div class="copy">
+  <div class="wm">Breakout</div>
+  <div class="sub">for Samsung TV</div>
+  <p class="tag">Break the wall, hit the UFO, and <b>every life you kept multiplies your score.</b></p>
+  <div class="keys"><kbd>←</kbd><kbd>→</kbd><kbd>Space</kbd><span>keyboard</span><kbd class="round">OK</kbd><span>remote</span></div>
 </div>
-<svg width="1200" height="630" viewBox="0 0 1200 630" aria-hidden="true">
-  <path d="M1010 506 L1073 346 L1109 252" fill="none" stroke="#eef1ff" stroke-opacity=".5" stroke-width="4" stroke-linecap="round" stroke-dasharray="2 16"/>
-  <circle cx="1073" cy="346" r="17" fill="#fff"/>
-  <rect x="900" y="522" width="220" height="28" rx="8" fill="#fff"/>
-</svg>
-<div class="title">Breakout</div>
-<div class="tag">Brick breaker for your Samsung TV</div>
-<div class="keys"><kbd>←</kbd><kbd>→</kbd><kbd>Space</kbd><span>on a keyboard</span><kbd class="round">OK</kbd><span>on the remote</span></div>
+<div class="set">
+  <div class="tv"><img src="img/breakout-ufo-behind-wall.webp" width="1920" height="1080" alt="" /></div>
+  <div class="stand"></div>
+</div>
 <div class="by">Built by Babak Bandpey · cocode.dk · linkedin.com/in/babakbandpey</div>
+<div class="strip"><i style="--c:#ff5a4a"></i><i style="--c:#ffaa3c"></i><i style="--c:#ffd447"></i><i style="--c:#4be38e"></i><i style="--c:#5aa9ff"></i><i style="--c:#ff5a4a"></i><i style="--c:#ffaa3c"></i><i style="--c:#ffd447"></i><i style="--c:#4be38e"></i><i style="--c:#5aa9ff"></i></div>
 </body>
 </html>
