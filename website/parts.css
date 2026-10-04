@@ -1,4 +1,4 @@
-/* Controls (keycaps), install steps and code blocks. */
+/* Controls (keycaps, the paddle's speed-up, the title screen), install steps and code blocks. */
 .pads { display: grid; gap: 20px; margin-top: 36px; }
 .pad { padding: 22px 20px; border: 2px solid var(--edge); border-radius: 16px; background: var(--panel); }
 .pad h3 { margin-bottom: 16px; font-size: 1.25rem; }
@@ -9,6 +9,22 @@
 kbd { display: inline-flex; align-items: center; justify-content: center; min-width: 40px; height: 40px; padding: 0 12px; border: 1px solid #3a4677; border-bottom-width: 4px; border-radius: 8px;
   background: #1a2350; color: var(--ink); font: 700 1rem/1 sans-serif; }
 .remote kbd { min-width: 44px; border-radius: 999px; border-color: #4a5690; background: #263063; }
+
+.feel { display: grid; gap: 28px; margin-top: 28px; }
+.hold { padding: 22px 20px; border: 2px solid var(--edge); border-radius: 16px; background: rgba(15, 23, 54, .82); }
+.hold p { margin: 0; color: var(--muted); }
+.hold .more { margin-top: 12px; }
+/* the paddle with a trail behind it that grows the longer the key is held */
+.ramp { display: flex; align-items: center; gap: 6px; height: 40px; margin-bottom: 14px; direction: ltr; }
+.ramp i { height: 8px; border-radius: 4px; background: var(--ink); }
+.ramp i:nth-child(1) { width: 6px; opacity: .15; }
+.ramp i:nth-child(2) { width: 12px; opacity: .25; }
+.ramp i:nth-child(3) { width: 22px; opacity: .4; }
+.ramp i:nth-child(4) { width: 36px; opacity: .6; }
+.ramp i:nth-child(5) { width: 96px; height: 14px; border-radius: 4px; opacity: 1; }
+.ramp-label { margin-inline-start: 10px; color: var(--yellow); font-weight: 800; white-space: nowrap; }
+.feel figure { margin: 0; }
+.feel .scr + figcaption { margin-top: 12px; color: var(--muted); }
 
 .steps { display: grid; gap: 32px; margin: 36px 0 0; padding: 0; list-style: none; }
 .steps li { display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 0 18px; }
@@ -30,4 +46,5 @@ pre { margin: 4px 0 0; padding: 16px 18px; border: 2px solid var(--edge); border
 }
 @media (min-width: 1024px) {
   .pads { grid-template-columns: 1fr 1fr; align-items: start; }
+  .feel { grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: 32px; align-items: center; }
 }

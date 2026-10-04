@@ -8,184 +8,183 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Breakout for Samsung TV: Free Tizen Brick Breaker · Cocode</title>
-  <meta name="description" content="Play Breakout on your Samsung TV with a keyboard or the remote: break through the wall, hit the UFO, multiply your score. A free, open-source Tizen game." />
-  <meta name="robots" content="index, follow" />
-  <meta name="theme-color" content="#070b1e" />
+  <title>Breakout for Samsung TV: Four Levels and a Boss · Cocode</title>
+  <meta name="description" content="Play Breakout on your Samsung TV with a keyboard or the remote: four walls, a UFO, a battle station boss and a lives multiplier. Free and open source for Tizen." />
+  <meta name="robots" content="index, follow" /><meta name="theme-color" content="#070b1e" />
   <link rel="canonical" href="https://breakout.cocode.dk/" />
   <link rel="alternate" hreflang="en" href="https://breakout.cocode.dk/" />
   <link rel="alternate" hreflang="fa" href="https://breakout.cocode.dk/fa/" />
   <link rel="alternate" hreflang="x-default" href="https://breakout.cocode.dk/" />
-  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
-  <link rel="apple-touch-icon" href="icon.png" />
-  <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="Breakout" />
-  <meta property="og:title" content="Breakout for Samsung TV: break the wall, hit the UFO" />
-  <meta property="og:description" content="The arcade classic for 2021 Samsung TVs, played with a keyboard or the remote. Break through the bricks, hit the UFO, and every life you kept multiplies your score." />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" /><link rel="apple-touch-icon" href="icon.png" />
+  <meta property="og:type" content="website" /><meta property="og:site_name" content="Breakout" />
+  <meta property="og:title" content="Breakout for Samsung TV: four walls, a UFO and a boss" />
+  <meta property="og:description" content="The arcade brick breaker for 2021 Samsung TVs. Break four walls, hit the UFO, bat the station's bolts back for 1,000, and every life you keep multiplies your score." />
   <meta property="og:url" content="https://breakout.cocode.dk/" />
   <meta property="og:image" content="https://breakout.cocode.dk/og.png" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="The word Breakout beside a TV showing the game: thin coloured bricks with a gap broken through them and a rainbow UFO above the wall." />
-  <meta property="og:locale" content="en_US" />
-  <meta property="og:locale:alternate" content="fa_IR" />
+  <meta property="og:image:width" content="1200" /><meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="The word Breakout beside a TV showing level 4: a grey wall with a grey battle station behind it, a green bolt falling towards the paddle and a gold one flying back." />
+  <meta property="og:locale" content="en_US" /><meta property="og:locale:alternate" content="fa_IR" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Breakout for Samsung TV: break the wall, hit the UFO" />
-  <meta name="twitter:description" content="The arcade classic for 2021 Samsung TVs, played with a keyboard or the remote. Break through the bricks, hit the UFO, and every life you kept multiplies your score." />
+  <meta name="twitter:title" content="Breakout for Samsung TV: four walls, a UFO and a boss" />
+  <meta name="twitter:description" content="The arcade brick breaker for 2021 Samsung TVs. Break four walls, hit the UFO, bat the station's bolts back for 1,000, and every life you keep multiplies your score." />
   <meta name="twitter:image" content="https://breakout.cocode.dk/og.png" />
-  <meta name="twitter:image:alt" content="The word Breakout beside a TV showing the game: thin coloured bricks with a gap broken through them and a rainbow UFO above the wall." />
+  <meta name="twitter:image:alt" content="The word Breakout beside a TV showing level 4: a grey wall with a grey battle station behind it, a green bolt falling towards the paddle and a gold one flying back." />
   <script type="application/ld+json">
   {
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    "name": "Breakout",
-    "description": "The arcade brick breaker for 2021 Samsung TVs, played with a keyboard or the TV remote: break through the wall, hit the UFO behind it, and the lives you kept multiply your score. A free, open-source Tizen web app you sideload in developer mode.",
-    "url": "https://breakout.cocode.dk/",
-    "downloadUrl": "https://github.com/cocodedk/breakout-tv/releases/latest",
-    "screenshot": "https://breakout.cocode.dk/img/breakout-ufo-behind-wall.webp",
-    "applicationCategory": "GameApplication",
-    "operatingSystem": "Tizen 6.0 (Samsung Smart TV)",
-    "inLanguage": ["en", "fa"],
+    "@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Breakout",
+    "description": "The arcade brick breaker for 2021 Samsung TVs, played with a keyboard or the TV remote on a deep-space sky. Three walls hide a UFO and the fourth a battle station that fires back; the lives you keep multiply your score. A free, open-source Tizen web app you sideload in developer mode.",
+    "url": "https://breakout.cocode.dk/", "downloadUrl": "https://github.com/cocodedk/breakout-tv/releases/latest",
+    "screenshot": [
+      {"@type":"ImageObject","contentUrl":"https://breakout.cocode.dk/img/breakout-level-1-wall-ufo.webp","caption":"Level 1: the full wall, with the UFO behind it"},
+      {"@type":"ImageObject","contentUrl":"https://breakout.cocode.dk/img/breakout-level-2-checkerboard.webp","caption":"Level 2: the checkerboard"},
+      {"@type":"ImageObject","contentUrl":"https://breakout.cocode.dk/img/breakout-level-3-pyramid.webp","caption":"Level 3: the pyramid under silver bricks"},
+      {"@type":"ImageObject","contentUrl":"https://breakout.cocode.dk/img/breakout-level-4-battle-station.webp","caption":"Level 4: the battle station firing bolts"},
+      {"@type":"ImageObject","contentUrl":"https://breakout.cocode.dk/img/breakout-lives-multiplier.webp","caption":"Seven lives left: the score multiplied by 7"},
+      {"@type":"ImageObject","contentUrl":"https://breakout.cocode.dk/img/breakout-game-over-retry.webp","caption":"Game over, with Retry level 4"},
+      {"@type":"ImageObject","contentUrl":"https://breakout.cocode.dk/img/breakout-title-screen.webp","caption":"The title screen"}],
+    "applicationCategory": "GameApplication", "operatingSystem": "Tizen 6.0 (Samsung Smart TV)", "inLanguage": ["en", "fa"],
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
     "author": { "@type": "Person", "name": "Babak Bandpey", "url": "https://cocode.dk",
       "sameAs": ["https://linkedin.com/in/babakbandpey", "https://github.com/cocodedk"] },
     "codeRepository": "https://github.com/cocodedk/breakout-tv"
   }
   </script>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Hanken+Grotesk:wght@400;600;800&display=swap" />
-  <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="stage.css" />
-  <link rel="stylesheet" href="plays.css" />
-  <link rel="stylesheet" href="parts.css" />
+  <link rel="stylesheet" href="styles.css" /><link rel="stylesheet" href="stage.css" /><link rel="stylesheet" href="levels.css" />
+  <link rel="stylesheet" href="score.css" /><link rel="stylesheet" href="parts.css" />
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
 <header class="wrap top">
   <a class="brand" href="./"><img src="favicon.svg" width="32" height="32" alt="" />Breakout</a>
-  <nav class="nav" aria-label="Main">
-    <a href="#play">How it plays</a><a href="#controls">Controls</a><a href="#screens">Screenshots</a><a href="#install">Install</a>
-  </nav>
+  <nav class="nav" aria-label="Main"><a href="#levels">Levels</a><a href="#scoring">Scoring</a><a href="#controls">Controls</a><a href="#install">Install</a></nav>
   <a class="lang-switch" href="fa/" hreflang="fa" lang="fa">فارسی</a>
 </header>
 <main id="main">
   <section class="wrap hero">
     <div>
       <h1><span class="wm">Breakout</span><span class="sub">for Samsung TV</span></h1>
-      <p class="lede">The arcade brick breaker for 2021 Samsung TVs. Plug a keyboard into the TV or pick up the remote, chip a hole through the wall and hit the UFO hiding behind it.</p>
-      <p class="cta">
-        <a class="btn btn-main" href="https://github.com/cocodedk/breakout-tv/releases/latest" target="_blank" rel="noreferrer">Download the app</a>
-        <a class="btn" href="https://github.com/cocodedk/breakout-tv" target="_blank" rel="noreferrer">Source on GitHub</a>
-      </p>
+      <p class="lede">The arcade brick breaker for 2021 Samsung TVs, played out on a deep-space sky. Pick up the remote or plug in a keyboard, break through three walls to the UFO behind each, then take on the battle station that shoots back.</p>
+      <p class="cta"><a class="btn btn-main" href="https://github.com/cocodedk/breakout-tv/releases/latest" target="_blank" rel="noreferrer">Download the app</a>
+        <a class="btn" href="https://github.com/cocodedk/breakout-tv" target="_blank" rel="noreferrer">Source on GitHub</a></p>
       <p class="fine">Free and open source. You install it in the TV's developer mode and sign it with your own Tizen certificate.</p>
     </div>
     <figure class="set">
-      <div class="tv"><img src="img/breakout-ufo-behind-wall.webp" width="1920" height="1080" fetchpriority="high" alt="Breakout on a TV: thin red, orange, yellow, green and blue bricks with a gap broken through them, the ball flying up the gap towards an orange UFO, and the white paddle below. Score 2,370, level 1, 9 lives." /></div>
+      <div class="tv"><img src="img/breakout-level-1-wall-ufo.webp" width="1920" height="1080" fetchpriority="high" alt="Breakout on a TV over a starry sky: thin red, orange, yellow, green and blue bricks with a tunnel broken through them, the ball flying up the tunnel towards a UFO with rainbow lights, and the white paddle below. Score 2,370, level 1, 9 lives." /></div>
       <span class="stand" aria-hidden="true"></span>
     </figure>
+    <span class="tw" aria-hidden="true"></span><span class="tw" aria-hidden="true"></span><span class="tw" aria-hidden="true"></span><span class="tw" aria-hidden="true"></span><span class="tw" aria-hidden="true"></span>
   </section>
-
   <div class="strip" aria-hidden="true"></div>
-
-  <section class="wrap sec" id="play">
-    <h2>How it plays</h2>
-    <p class="intro">Every level is a wall of thin bricks with a UFO gliding back and forth behind it. You don't have to clear the wall. You only have to reach the UFO.</p>
-    <ol class="beats">
-      <li><h3>Break through</h3><p>Every brick you break scores, from 10 for blue up to 50 for red. Cut a gap and the ball gets into the space behind the wall.</p></li>
-      <li><h3>Hit the UFO</h3><p>The saucer slides left and right with its lights running through the rainbow. Touch it with the ball for 500 points: the rest of the wall dissolves and the next level begins.</p></li>
-      <li><h3>Keep your lives</h3><p>Each level gives you 10 lives. When you hit the UFO, your whole score is multiplied by the lives you have left, so a level without a dropped ball is worth ten times everything so far.</p></li>
+  <section class="wrap sec" id="levels">
+    <h2>Four walls, one boss</h2>
+    <p class="intro">Every wall hides a target. Behind the first three, a UFO slides back and forth with its lights cycling through the rainbow. Get the ball to it and the rest of the wall dissolves. You never have to clear every brick.</p>
+    <ol class="levels">
+      <li class="lv lv1"><figure>
+        <div class="scr"><img src="img/breakout-level-1-wall-ufo.webp" width="1920" height="1080" loading="lazy" alt="Level 1: a full wall of red, orange, yellow, green and blue bricks with a tunnel cut up through it and the UFO above." /></div>
+        <figcaption><h3><span class="tag">Level 1</span>The full wall</h3><p>Ten rows in five colours. Cut a tunnel and send the ball up it to the UFO.</p></figcaption></figure></li>
+      <li class="lv lv2"><figure>
+        <div class="scr"><img src="img/breakout-level-2-checkerboard.webp" width="1920" height="1080" loading="lazy" alt="Level 2: bricks in a checkerboard pattern, every other brick missing, the UFO at the top left and the ball falling towards the paddle." /></div>
+        <figcaption><h3><span class="tag">Level 2</span>The checkerboard</h3><p>Every other brick is missing, so the ball zigzags through the gaps in ways you won't see coming.</p></figcaption></figure></li>
+      <li class="lv lv3"><figure>
+        <div class="scr"><img src="img/breakout-level-3-pyramid.webp" width="1920" height="1080" loading="lazy" alt="Level 3: two rows of silver bricks over an upside-down pyramid of red, orange, yellow, green and blue bricks, with the UFO above." /></div>
+        <figcaption><h3><span class="tag">Level 3</span>The pyramid</h3><p>Two rows of silver bricks guard the top, and each silver brick takes two hits.</p></figcaption></figure></li>
+      <li class="lv boss"><figure>
+        <div class="scr"><img src="img/breakout-level-4-battle-station.webp" width="1920" height="1080" loading="lazy" alt="Level 4: a grey wall with a round grey battle station behind it, its dish glowing green as it charges. A green bolt falls towards the paddle and a gold bolt flies back up at the station. Score 1,382,560, 5 lives." /></div>
+        <figcaption>
+          <h3><span class="tag">Level 4</span><span class="tag tag-boss">Boss</span>The battle station</h3>
+          <p>No UFO this time. A grey station hangs behind a grey wall and fires at your paddle. Its dish glows green just before each shot.</p>
+          <ul class="bolts"><li><i aria-hidden="true"></i><span><b>Green bolts</b> come down at the paddle. One that gets past costs you nothing.</span></li>
+            <li class="gold"><i aria-hidden="true"></i><span><b>Bat one back</b> and it turns gold. If it reaches the station, that's 1,000 points.</span></li></ul>
+          <p class="win">Get the ball itself into the station and the level is won.</p>
+        </figcaption></figure></li>
     </ol>
-    <figure class="sum">
-      <img src="img/breakout-lives-multiplier.webp" width="1920" height="1080" loading="lazy" alt="The moment after a UFO hit on level 2: the wall fades away and the line 7 lives left: score × 7 shows in yellow. The score reads 30,800." />
-      <figcaption>
-        <p class="math">(3,900 + 500) <b>× 7</b> = 30,800</p>
-        <p>Seven lives left on level 2. The UFO's 500 points go on first, then the whole score is multiplied by 7, and the wall dissolves.</p>
-      </figcaption>
-    </figure>
-    <ul class="facts">
-      <li><strong>Three walls.</strong> A full wall, a checkerboard, and a pyramid under two rows of silver bricks that take two hits each.</li>
-      <li><strong>Then faster.</strong> After level 3 the walls come round again, and the ball starts 10% faster every time. It also picks up speed as a wall wears down.</li>
-      <li><strong>Lost every life?</strong> Retry the same level with the score it started with, start over from level 1, or go back to the title.</li>
-      <li><strong>Best score kept.</strong> Your best score stays on the TV. Short arcade beeps for every bounce; press M to mute them.</li>
-    </ul>
+    <p class="loop"><strong>Then round again, faster.</strong> After level 4 the walls come back from level 1 and the ball starts 10% faster each time. It also picks up speed as a wall wears down.</p>
   </section>
-
+  <section class="wrap sec" id="scoring">
+    <h2>How the score adds up</h2>
+    <p class="intro">Bricks score as they break. The big points are behind the wall, and in not dropping the ball.</p>
+    <ul class="points" aria-label="Points per brick">
+      <li><span class="brk" style="--c:var(--red)">50</span>Red</li><li><span class="brk" style="--c:var(--orange)">40</span>Orange</li>
+      <li><span class="brk" style="--c:var(--yellow)">30</span>Yellow</li><li><span class="brk" style="--c:var(--green)">20</span>Green</li>
+      <li><span class="brk" style="--c:var(--blue)">10</span>Blue</li><li><span class="brk" style="--c:var(--silver)">100</span>Silver, two hits</li>
+      <li><span class="brk" style="--c:var(--light-grey)">30</span>Light grey</li><li><span class="brk brk-dark" style="--c:var(--panel-grey)">20</span>Dark grey</li>
+    </ul>
+    <ul class="rules">
+      <li><span class="val">500</span><h3>Hit the UFO or the station</h3><p>The ball touching the UFO on levels 1 to 3, or the station on level 4, ends the level: the rest of the wall dissolves and the next one begins.</p></li>
+      <li><span class="val">+1,000</span><h3>Bat a bolt back</h3><p>On level 4, catch a green bolt on the paddle. It flies back gold, and if it reaches the station it's worth 1,000.</p></li>
+      <li><span class="val"><span class="rainbow">× lives</span></span><h3>Keep your lives</h3><p>You get 10 lives on every level. When a level ends, your whole score is multiplied by the lives you have left.</p></li>
+    </ul>
+    <div class="moments">
+      <figure><img src="img/breakout-lives-multiplier.webp" width="1920" height="1080" loading="lazy" alt="Just after a UFO hit on level 2: the wall fades away and the line 7 lives left: score × 7 shows in yellow. The score reads 226,800." />
+        <figcaption><p class="math">(31,900 + 500) <b class="rainbow">× 7</b> = 226,800</p><p>Seven lives left on level 2. The UFO's 500 goes on first, then the whole score is multiplied by 7 while the wall dissolves.</p></figcaption></figure>
+      <figure><img src="img/breakout-game-over-retry.webp" width="1920" height="1080" loading="lazy" alt="Game over with score 1,386,940 and New best!, and three choices: Retry level 4, Start over and Title." />
+        <figcaption><h3>Out of lives?</h3><p><b>Retry level 4</b> plays that level again with the score you reached it with. <b>Start over</b> goes back to level 1, and <b>Title</b> to the title screen. Your best score stays on the TV.</p></figcaption></figure>
+    </div>
+  </section>
   <section class="wrap sec" id="controls">
     <h2>Controls</h2>
-    <p class="intro">Plug any USB or wireless keyboard into the TV, or just use the remote. Hold a key and the paddle glides; let go and it stops.</p>
+    <p class="intro">Plug any USB or Bluetooth keyboard into the TV, or just use the remote. The same keys do the same thing on both.</p>
     <div class="pads">
-      <div class="pad">
-        <h3>Keyboard</h3>
+      <div class="pad"><h3>Keyboard</h3>
         <dl>
-          <dt>Move (hold)</dt><dd><span class="grp"><kbd>←</kbd><kbd>→</kbd></span> or <span class="grp"><kbd>A</kbd><kbd>D</kbd></span></dd>
-          <dt>Launch the ball</dt><dd><kbd>Space</kbd> or <kbd>Enter</kbd></dd>
-          <dt>Pause</dt><dd><kbd>P</kbd></dd>
-          <dt>Back</dt><dd><kbd>Esc</kbd> or <kbd>Backspace</kbd></dd>
-          <dt>Sound on/off</dt><dd><kbd>M</kbd></dd>
-          <dt>Menus</dt><dd><span class="grp"><kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd></span> then <kbd>Enter</kbd></dd>
-        </dl>
-      </div>
-      <div class="pad remote">
-        <h3>TV remote</h3>
+          <dt>Move (hold)</dt><dd><span class="grp"><kbd>←</kbd><kbd>→</kbd></span> or <span class="grp"><kbd>A</kbd><kbd>D</kbd></span></dd><dt>Launch the ball</dt><dd><kbd>Space</kbd> or <kbd>Enter</kbd></dd>
+          <dt>Pause</dt><dd><kbd>P</kbd></dd><dt>Back</dt><dd><kbd>Esc</kbd> or <kbd>Backspace</kbd></dd>
+          <dt>Sound on/off</dt><dd><kbd>M</kbd></dd><dt>Menus</dt><dd><span class="grp"><kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd></span> then <kbd>Enter</kbd></dd>
+        </dl></div>
+      <div class="pad remote"><h3>TV remote</h3>
         <dl>
-          <dt>Move (hold)</dt><dd><span class="grp"><kbd>←</kbd><kbd>→</kbd></span></dd>
-          <dt>Launch the ball</dt><dd><kbd>OK</kbd></dd>
-          <dt>Pause, back</dt><dd><kbd>Back</kbd></dd>
-          <dt>Menus</dt><dd><span class="grp"><kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd></span> then <kbd>OK</kbd></dd>
-        </dl>
-      </div>
+          <dt>Move (hold)</dt><dd><span class="grp"><kbd>←</kbd><kbd>→</kbd></span></dd><dt>Launch the ball</dt><dd><kbd>OK</kbd></dd>
+          <dt>Pause, back</dt><dd><kbd>Back</kbd></dd><dt>Menus</dt><dd><span class="grp"><kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd></span> then <kbd>OK</kbd></dd>
+        </dl></div>
     </div>
-    <p class="note">Back always does something: during play it pauses, in a menu it closes it or goes back a screen, and on the title it asks before leaving.</p>
+    <div class="feel">
+      <div class="hold">
+        <div class="ramp" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><span class="ramp-label">hold</span></div>
+        <h3>Hold to speed up</h3>
+        <p>The paddle starts off gently and gets faster the longer you hold the key, so a tap nudges it and a long press sends it across the screen. Let go and it stops.</p>
+        <p class="more">Back always does something: in play it pauses, in a menu it closes it, and on the title it asks before leaving. Every bounce beeps, and hitting the UFO sets off a layered crash; M turns the sound off.</p>
+      </div>
+      <figure>
+        <div class="scr"><img src="img/breakout-title-screen.webp" width="1920" height="1080" loading="lazy" alt="The title screen on a starry sky: Breakout in large white letters, Press Enter or OK to start, best score 1,386,940 and the controls." /></div>
+        <figcaption>The title screen shows your best score and the controls.</figcaption></figure>
+    </div>
   </section>
-
-  <section class="wrap sec" id="screens">
-    <h2>Screenshots</h2>
-    <p class="intro">Taken from the game itself at the TV's 1920×1080.</p>
-    <ul class="shots">
-      <li><figure><a href="img/breakout-title-screen.webp"><img src="img/breakout-title-screen.webp" width="1920" height="1080" loading="lazy" alt="The title screen: Breakout in large white letters, Press Enter or OK to start, best score 30,800 and the controls." /></a><figcaption>The title screen shows your best score and the controls.</figcaption></figure></li>
-      <li><figure><a href="img/breakout-level-3-pyramid.webp"><img src="img/breakout-level-3-pyramid.webp" width="1920" height="1080" loading="lazy" alt="Level 3: two rows of silver bricks over a pyramid of red, orange, yellow, green and blue bricks, with the UFO above." /></a><figcaption>Level 3: a pyramid under two rows of silver bricks.</figcaption></figure></li>
-      <li><figure><a href="img/breakout-game-over-retry.webp"><img src="img/breakout-game-over-retry.webp" width="1920" height="1080" loading="lazy" alt="Game over with score 48,250 and New best!, and three choices: Retry level 3, Start over and Title." /></a><figcaption>Game over: retry the level, start over or go to the title.</figcaption></figure></li>
-    </ul>
-  </section>
-
   <section class="wrap sec" id="install">
     <h2>Install it on your TV</h2>
     <p class="intro">Breakout isn't in Samsung's app store. You install it from a computer on the same network as the TV, with the <code>tizen</code> and <code>sdb</code> command line tools from Tizen Studio.</p>
     <ol class="steps">
       <li><span class="n" aria-hidden="true">1</span><h3>Turn on developer mode</h3><p>On the TV, open Apps (App Settings on some sets), press 1 2 3 4 5 on the remote and switch Developer mode on. Enter your computer's IP address, then restart the TV. Some sets also want "Permit to install applications" from Tizen Studio's Device Manager before the first install.</p></li>
-      <li><span class="n" aria-hidden="true">2</span><h3>Make a signing profile</h3><p>A Samsung TV installs only signed apps, and a signing key should stay with its owner, so you sign Breakout yourself. Create a certificate profile in Tizen Studio's Certificate Manager. If a retail set turns it down, use a Samsung certificate with your TV's DUID registered.</p></li>
-      <li><span class="n" aria-hidden="true">3</span><h3>Get the app folder</h3><p>Download <code>breakout-tv-app.zip</code> from the <a href="https://github.com/cocodedk/breakout-tv/releases/latest" target="_blank" rel="noreferrer">releases page</a> and unzip it to get an <code>app</code> folder. Or build it from the source, which puts it in <code>dist/app</code>:</p>
+      <li><span class="n" aria-hidden="true">2</span><h3>Make a signing profile</h3><p>A Samsung TV installs only signed apps, and a signing key should stay with its owner, so you sign Breakout yourself. Create a certificate profile in Tizen Studio's Certificate Manager; <code>tizen security-profiles list</code> shows it. If a retail set turns it down, use a Samsung certificate with your TV's DUID registered.</p></li>
+      <li><span class="n" aria-hidden="true">3</span><h3>Get the app folder</h3><p>Download <a href="https://github.com/cocodedk/breakout-tv/releases/latest/download/breakout-tv-app.zip"><code>breakout-tv-app.zip</code></a> from the <a href="https://github.com/cocodedk/breakout-tv/releases/latest" target="_blank" rel="noreferrer">latest release</a> and unzip it to get an <code>app</code> folder. Or build it from the source, which puts it in <code>dist/app</code>:</p>
 <pre>git clone https://github.com/cocodedk/breakout-tv.git
 cd breakout-tv
 npm ci
 npm run stage</pre></li>
-      <li><span class="n" aria-hidden="true">4</span><h3>Package, install, play</h3><p>Use <code>app</code> instead of <code>dist/app</code> if you unzipped the download. <code>tizen package</code> names the file <code>Breakout.wgt</code>: rename it to <code>app.wgt</code> before you install. <code>-t</code> takes the device name <code>sdb devices</code> prints.</p>
+      <li><span class="n" aria-hidden="true">4</span><h3>Package, install, play</h3><p>Use <code>app</code> instead of <code>dist/app</code> if you unzipped the download. <code>tizen package</code> names the file <code>Breakout.wgt</code>: rename it to <code>app.wgt</code> before you install. <code>-t</code> takes the device name <code>sdb devices</code> prints, not the IP address.</p>
 <pre>tizen package -t wgt -s MyProfile -- dist/app
 sdb connect 192.168.1.50:26101
 tizen install -n app.wgt -t MyTV -- dist/app
 tizen run -p BreakoutTV.Breakout -t MyTV</pre></li>
     </ol>
   </section>
-
   <section class="wrap sec" id="dev">
     <h2>Under the hood</h2>
     <p class="intro">A Tizen TV app is a website in a zip file with a <code>config.xml</code>. Breakout is plain HTML, CSS and JavaScript running in the TV's own browser, with no network access at all.</p>
     <dl class="specs">
       <div><dt>A browser that never updates</dt><dd>A 2021 TV runs Chromium 76 and stays there. The code avoids anything newer, such as <code>?.</code> and <code>??</code>, and a lint step rejects it.</dd></div>
-      <div><dt>No build step</dt><dd>Classic script tags share one <code>window.BO</code> namespace. No modules, no bundler, no framework, no runtime packages.</dd></div>
+      <div><dt>No build step</dt><dd>Classic script tags share one <code>window.BO</code> namespace: no modules, bundler or framework. The sky, the UFO and the station are drawn by the game itself, not loaded as pictures.</dd></div>
       <div><dt>One handler, two inputs</dt><dd>A keyboard and the remote both send key events, and the game reads <code>keyCode</code>, which the TV fills in reliably for both.</dd></div>
-      <div><dt>Tested without a TV</dt><dd><code>npm run check</code> runs the compatibility lint, unit tests for the physics and scoring, and Playwright drives that play the game at 1920×1080 with synthetic keys.</dd></div>
+      <div><dt>Tested without a TV</dt><dd><code>npm run check</code> runs the compatibility lint, unit tests for the physics, the station and the scoring, and Playwright drives that play all four levels at 1920×1080 with synthetic keys.</dd></div>
     </dl>
   </section>
-
   <section class="wrap finale">
     <h2>Get Breakout</h2>
     <p class="intro">The latest release and the full source are on GitHub. Found a bug on your TV model? Open an issue.</p>
-    <p class="cta">
-      <a class="btn btn-main" href="https://github.com/cocodedk/breakout-tv/releases/latest" target="_blank" rel="noreferrer">Download the app</a>
-      <a class="btn" href="https://github.com/cocodedk/breakout-tv/issues" target="_blank" rel="noreferrer">Report a problem</a>
-    </p>
+    <p class="cta"><a class="btn btn-main" href="https://github.com/cocodedk/breakout-tv/releases/latest" target="_blank" rel="noreferrer">Download the app</a>
+        <a class="btn" href="https://github.com/cocodedk/breakout-tv/issues" target="_blank" rel="noreferrer">Report a problem</a></p>
+    <p class="fine">Built by <a href="https://cocode.dk" target="_blank" rel="noreferrer">Cocode</a>.</p>
   </section>
 </main>
 <div class="strip" aria-hidden="true"></div>
