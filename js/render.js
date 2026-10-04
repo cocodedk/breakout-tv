@@ -1,4 +1,5 @@
-/* Breakout canvas: draws the bricks, the UFO, the paddle and the ball on a see-through playfield. */
+/* Breakout canvas: draws the station, the bricks, the UFO, the paddle, the ball and the bolts on a
+   see-through playfield. */
 (function (BO) {
   "use strict";
   var SILVER_HIT = "#7d869a";
@@ -69,12 +70,15 @@
   /* Clears and paints the whole playfield from the physics state and the view: { fade, ballHidden, hue }. */
   function draw(ctx, s, view) {
     ctx.clearRect(0, 0, physics.W, physics.H);
+    if (s.station) { BO.render.station(ctx, s.station, BO.station.charging(s)); }
     drawBricks(ctx, s.bricks, view.fade);
-    drawCore(ctx, s.core, view.hue);
+    if (s.core) { drawCore(ctx, s.core, view.hue); }
     ctx.fillStyle = "#ffffff";
     roundRect(ctx, s.paddleX, physics.PADDLE_Y, physics.PADDLE_W, physics.PADDLE_H, RADIUS);
     if (!view.ballHidden) { disc(ctx, s.ball.x, s.ball.y, physics.BALL_R, "#ffffff"); }
+    BO.render.bolts(ctx, s.bolts);
   }
 
-  BO.render = { draw: draw };
+  /* render-station.js adds station and bolts. */
+  BO.render = { draw: draw, disc: disc, roundRect: roundRect };
 })(window.BO);

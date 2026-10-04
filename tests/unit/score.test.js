@@ -9,8 +9,8 @@ function near(actual, expected) {
 
 test("points per colour", function () {
   assert.deepStrictEqual(
-    ["R", "O", "Y", "G", "B", "S"].map(score.points),
-    [50, 40, 30, 20, 10, 100]
+    ["R", "O", "Y", "G", "B", "S", "L", "D"].map(score.points),
+    [50, 40, 30, 20, 10, 100, 30, 20]
   );
 });
 

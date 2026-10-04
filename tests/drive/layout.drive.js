@@ -105,6 +105,20 @@ runDrive(async function (browser, url) {
   await checkLayout(page, "the level banner, with the bonus line");
   await page.clock.runFor(1500);
 
+  // Level 4: its banner, then Serve, then Moving with a bolt in the air.
+  await h.seed(page, Object.assign({ level: 3 }, h.atCore(h.FAR_BRICKS)));
+  await page.clock.runFor(1200);
+  assert.strictEqual(await h.text(page, "#play-banner"), "Level 4");
+  await checkLayout(page, "the level 4 banner");
+  await page.clock.runFor(1600);
+  assert.strictEqual((await h.snap(page)).level, 4);
+  await checkLayout(page, "level 4 in Serve");
+  await h.tap(page, K.SPACE);
+  await h.seed(page, { ball: { x: 100, y: 700, vx: 0, vy: 0 } });
+  await page.clock.runFor(2300);
+  assert.strictEqual((await h.snap(page)).bolts.length, 1);
+  await checkLayout(page, "level 4 with a bolt in the air");
+
   await h.seed(page, { lives: 1, ball: { x: 100, y: 600, vx: 0, vy: 720 } });
   await page.clock.runFor(1000);
   assert.strictEqual((await h.snap(page)).screen, "over");

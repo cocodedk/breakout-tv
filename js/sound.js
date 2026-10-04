@@ -5,11 +5,13 @@
   var PEAK = 0.2;
   var EDGE = 0.005;
 
-  /* Each note: [wave, start Hz, end Hz, seconds]. */
+  /* Each note: [wave, start Hz, end Hz, seconds] and, when it is not 0.2, a peak gain. */
   var TONES = {
     paddle: [["square", 440, 440, 0.06]],
     brick: [["square", 660, 660, 0.05]],
     wall: [["square", 330, 330, 0.04]],
+    fire: [["square", 880, 440, 0.12, 0.12]],
+    reflect: [["square", 660, 1320, 0.08, 0.15]],
     cleared: [["square", 523, 523, 0.12], ["square", 659, 659, 0.12], ["square", 784, 784, 0.12]],
     over: [["square", 392, 392, 0.25], ["square", 262, 262, 0.25]]
   };
@@ -57,7 +59,7 @@
     osc.type = spec[0];
     osc.frequency.setValueAtTime(spec[1], t);
     if (spec[2] !== spec[1]) { osc.frequency.linearRampToValueAtTime(spec[2], end); }
-    osc.connect(envelope(t, end, PEAK));
+    osc.connect(envelope(t, end, spec[4] || PEAK));
     osc.start(t);
     osc.stop(end);
     track(osc, end);
@@ -78,6 +80,16 @@
     } catch (e) { /* a broken audio device must not stop the game */ }
   }
 
+  /* The tones for one game step: one for the ball (the first of core, brick, paddle, wall), then one for
+     each bolt event (fire, reflect, station-hit). */
+  function playEvents(events) {
+    var ball = ["core", "brick", "paddle", "wall"].filter(function (e) { return events.indexOf(e) >= 0; })[0];
+    if (ball) { play(ball); }
+    events.forEach(function (e) {
+      if (e === "fire" || e === "reflect" || e === "station-hit") { play(e); }
+    });
+  }
+
   /* Muting also cancels notes already scheduled, such as the rest of a level-clear run. */
   function silence() {
     playing.forEach(function (p) {
@@ -94,7 +106,7 @@
   }
 
   BO.sound = {
-    unlock: unlock, play: play, toggle: toggle, isOn: function () { return on; },
+    unlock: unlock, play: play, playEvents: playEvents, toggle: toggle, isOn: function () { return on; },
     envelope: envelope, extend: function (name, sound) { layered[name] = sound; }
   };
 })(window.BO);

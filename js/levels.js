@@ -1,9 +1,9 @@
-/* Breakout levels: the three wall layouts and how they become bricks. No DOM. */
+/* Breakout levels: the four wall layouts and how they become bricks. No DOM. */
 (function (BO) {
   "use strict";
   var score = BO.score || require("./score.js");
 
-  /* R O Y G B are the colours, S is a silver two-hit brick, . is empty. The bricks are thin, so
+  /* R O Y G B are the colours, L and D light and dark grey, S a silver two-hit brick, . is empty. The bricks are thin, so
      every line is written twice: each layer of the wall is two rows. */
   var LAYOUTS = [
     [
@@ -45,6 +45,20 @@
       "....GGGG....",
       ".....BB.....",
       ".....BB....."
+    ],
+    [
+      "LLLLLLLLLLLL",
+      "LLLLLLLLLLLL",
+      "DDDDDDDDDDDD",
+      "DDDDDDDDDDDD",
+      "LL.LL..LL.LL",
+      "LL.LL..LL.LL",
+      "SSSSSSSSSSSS",
+      "SSSSSSSSSSSS",
+      "DDDDDDDDDDDD",
+      "DDDDDDDDDDDD",
+      "LLLLLLLLLLLL",
+      "LLLLLLLLLLLL"
     ]
   ];
 
@@ -54,7 +68,9 @@
     Y: "#ffd447",
     G: "#4be38e",
     B: "#5aa9ff",
-    S: "#c8d0e0"
+    S: "#c8d0e0",
+    L: "#9aa3b5",
+    D: "#5b6378"
   };
 
   var BRICK_W = 120;
@@ -63,11 +79,13 @@
   var ROW_STEP = 28;
   var LEFT = 36;
   var TOP = 120;
+  /* The y of each layout's top row: level 4 starts lower, to leave room for the station. */
+  var TOPS = [TOP, TOP, TOP, 260];
 
-  function brick(col, row, color) {
+  function brick(col, row, color, top) {
     return {
       x: LEFT + col * COL_STEP,
-      y: TOP + row * ROW_STEP,
+      y: (top || TOP) + row * ROW_STEP,
       w: BRICK_W,
       h: BRICK_H,
       color: color,
@@ -76,19 +94,19 @@
     };
   }
 
-  function parse(rows) {
+  function parse(rows, top) {
     var bricks = [];
     rows.forEach(function (line, row) {
       for (var col = 0; col < line.length; col++) {
-        if (line.charAt(col) !== ".") { bricks.push(brick(col, row, line.charAt(col))); }
+        if (line.charAt(col) !== ".") { bricks.push(brick(col, row, line.charAt(col), top)); }
       }
     });
     return bricks;
   }
 
-  /* The fresh wall of level 1, 2 or 3. */
+  /* The fresh wall of level 1, 2, 3 or 4. */
   function build(level) {
-    return parse(LAYOUTS[level - 1]);
+    return parse(LAYOUTS[level - 1], TOPS[level - 1]);
   }
 
   BO.levels = {

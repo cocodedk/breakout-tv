@@ -80,4 +80,10 @@ function installShim() {
   window.AudioContext = FakeAudioContext;
 }
 
-module.exports = { installShim: installShim };
+/* A gain curve with the 5 ms attack and release: [set 0, ramp to peak, set peak, ramp to 0]. */
+function envelope(peak, start, end) {
+  function r(x) { return Math.round(x * 1e6) / 1e6; }
+  return [["set", 0, start], ["ramp", peak, r(start + 0.005)], ["set", peak, r(end - 0.005)], ["ramp", 0, end]];
+}
+
+module.exports = { installShim: installShim, envelope: envelope };

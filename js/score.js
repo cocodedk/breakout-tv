@@ -1,9 +1,10 @@
-/* Breakout scoring: points per brick colour and for the core, the speed rule and the best score.
+/* Breakout scoring: points per brick colour, for the core and for a returned bolt, the speed rule and the best score.
    No DOM. */
 (function (BO) {
   "use strict";
-  var POINTS = { R: 50, O: 40, Y: 30, G: 20, B: 10, S: 100 };
+  var POINTS = { R: 50, O: 40, Y: 30, G: 20, B: 10, S: 100, L: 30, D: 20 };
   var CORE_POINTS = 500;
+  var BOLT_POINTS = 1000;
   var BASE_SPEED = 720;
   var LOOP_RISE = 1.1;
   var BRICKS_PER_RISE = 20;
@@ -15,7 +16,7 @@
     return POINTS[color] || 0;
   }
 
-  /* The level's start speed after `loop` complete rounds of all three levels. */
+  /* The level's start speed after `loop` complete rounds of all four levels. */
   function startSpeed(loop) {
     return BASE_SPEED * Math.pow(LOOP_RISE, loop);
   }
@@ -50,6 +51,7 @@
   BO.score = {
     POINTS: POINTS,
     CORE_POINTS: CORE_POINTS,
+    BOLT_POINTS: BOLT_POINTS,
     MAX_SPEED: MAX_SPEED,
     MAX_SCORE: MAX_SCORE,
     multiply: multiply,

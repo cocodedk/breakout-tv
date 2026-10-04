@@ -1,4 +1,5 @@
 /* Breakout physics: one fixed step of the paddle, the core, the ball, the walls and the bricks. No DOM.
+   The core is null on the station's level; the station and its bolts are in station.js.
    Positions are in playfield pixels, time in seconds. */
 (function (BO) {
   "use strict";
@@ -36,14 +37,14 @@
 
   function newState(bricks) {
     var s = { paddleX: 0, paddleDir: 0, paddleRun: 0, ball: { x: 0, y: 0, vx: 0, vy: 0 }, bricks: bricks,
-      score: 0, broken: 0, serving: true, core: core.create() };
+      score: 0, broken: 0, serving: true, core: core.create(), station: null, bolts: [], fireIn: 0 };
     serve(s);
     return s;
   }
 
   /* Hitting the core scores, and the ball is not reflected: it flies on until the game hides it. */
   function hitCore(s, events) {
-    if (!core.touches(s.core, s.ball.x, s.ball.y, R)) { return; }
+    if (!s.core || !core.touches(s.core, s.ball.x, s.ball.y, R)) { return; }
     s.score += score.CORE_POINTS;
     events.push("core");
   }
@@ -72,6 +73,13 @@
     return hit;
   }
 
+  /* The velocity of something leaving the paddle at x: 60 degrees from straight up per unit of offset
+     from the paddle's middle (-1 to 1). */
+  function leave(s, x, speed) {
+    var offset = clamp((x - (s.paddleX + PADDLE_W / 2)) / (PADDLE_W / 2), -1, 1);
+    return { vx: speed * Math.sin(MAX_BOUNCE_ANGLE * offset), vy: -speed * Math.cos(MAX_BOUNCE_ANGLE * offset) };
+  }
+
   /* The ball must come down across the paddle's top: one already below it hit the side. */
   function bouncePaddle(s, prevBottom) {
     var ball = s.ball;
@@ -80,11 +88,10 @@
     var dy = ball.y - PADDLE_Y;
     var touches = dx * dx + dy * dy <= R * R;
     if (ball.vy <= 0 || prevBottom > PADDLE_Y || bottom < PADDLE_Y || !touches) { return false; }
-    var offset = clamp((ball.x - (s.paddleX + PADDLE_W / 2)) / (PADDLE_W / 2), -1, 1);
-    var speed = Math.sqrt(ball.vx * ball.vx + ball.vy * ball.vy);
+    var v = leave(s, ball.x, Math.sqrt(ball.vx * ball.vx + ball.vy * ball.vy));
     ball.y = PADDLE_Y - R;
-    ball.vx = speed * Math.sin(MAX_BOUNCE_ANGLE * offset);
-    ball.vy = -speed * Math.cos(MAX_BOUNCE_ANGLE * offset);
+    ball.vx = v.vx;
+    ball.vy = v.vy;
     return true;
   }
 
@@ -153,7 +160,7 @@
     var events = [];
     var ball = s.ball;
     movePaddle(s, dt, dir);
-    core.move(s.core, dt);
+    if (s.core) { core.move(s.core, dt); }
     if (s.serving) {
       follow(s);
       return events;
@@ -179,6 +186,7 @@
     newState: newState,
     serve: serve,
     launch: launch,
+    leave: leave,
     setSpeed: setSpeed,
     step: step
   };
