@@ -13,13 +13,15 @@ require("../../js/render.js");
 function recorder() {
   var ctx = { fills: [], globalAlpha: 1, path: null };
   ctx.fillRect = function () {};
-  ctx.beginPath = function () { ctx.path = { arcs: [], moves: [] }; };
-  ctx.arc = function (x, y, r) { ctx.path.arcs.push([x, y, r]); };
+  ctx.beginPath = function () { ctx.path = { arcs: [], ellipses: [], moves: [] }; };
+  ctx.arc = function (x, y, r, from, to) { ctx.path.arcs.push([x, y, r, from, to]); };
+  ctx.ellipse = function (x, y, rx, ry) { ctx.path.ellipses.push([x, y, rx, ry]); };
   ctx.moveTo = function (x, y) { ctx.path.moves.push([x, y]); };
   ctx.arcTo = function () {};
   ctx.closePath = function () {};
   ctx.fill = function () {
-    ctx.fills.push({ color: ctx.fillStyle, alpha: ctx.globalAlpha, arcs: ctx.path.arcs, moves: ctx.path.moves });
+    ctx.fills.push({ color: ctx.fillStyle, alpha: ctx.globalAlpha, arcs: ctx.path.arcs,
+      ellipses: ctx.path.ellipses, moves: ctx.path.moves });
   };
   return ctx;
 }
@@ -28,9 +30,9 @@ function discs(ctx) {
   return ctx.fills.filter(function (f) { return f.arcs.length > 0; });
 }
 
-/* What the HUD hands the renderer: how far the wall has dissolved, and whether the ball is hidden. */
-function view(fade, ballHidden) {
-  return { fade: fade || 0, ballHidden: !!ballHidden };
+/* What the HUD hands the renderer: how far the wall has dissolved, whether the ball is hidden, the UFO's hue. */
+function view(fade, ballHidden, hue) {
+  return { fade: fade || 0, ballHidden: !!ballHidden, hue: hue || 0 };
 }
 
 function state(bricks) {
@@ -41,15 +43,35 @@ function state(bricks) {
   return s;
 }
 
-test("the core is a glow of radius 44, a disc of radius 28 and an inner disc of radius 14", function () {
+/* The fills of the UFO, in drawing order: everything centred within 60px of x 500 and above y 100. */
+function ufo(ctx) {
+  return ctx.fills.filter(function (f) {
+    var p = f.ellipses.concat(f.arcs)[0];
+    return p && Math.abs(p[0] - 500) <= 60 && p[1] < 100;
+  });
+}
+
+test("the UFO is a glow, a hull, a dome and five lights, drawn in that order", function () {
   var ctx = recorder();
-  BO.render.draw(ctx, state([]), view());
-  var found = discs(ctx).filter(function (f) { return f.arcs[0][0] === 500; });
-  assert.deepStrictEqual(found.map(function (f) { return [f.color, f.arcs[0][1], f.arcs[0][2]]; }), [
-    ["rgba(255, 212, 71, 0.25)", 60, 44],
-    ["#ffd447", 60, 28],
-    ["#fff1b0", 60, 14]
-  ]);
+  BO.render.draw(ctx, state([]), view(0, false, 0));
+  var f = ufo(ctx);
+  assert.strictEqual(f.length, 8);
+  assert.deepStrictEqual([f[0].color, f[0].ellipses], ["hsla(0, 90%, 60%, 0.25)", [[500, 60, 60, 26]]]);
+  assert.deepStrictEqual([f[1].color, f[1].ellipses], ["hsl(0, 90%, 60%)", [[500, 64, 44, 12]]]);
+  assert.deepStrictEqual([f[2].color, f[2].arcs], ["rgba(200, 240, 255, 0.85)", [[500, 56, 18, Math.PI, 2 * Math.PI]]]);
+  [-30, -15, 0, 15, 30].forEach(function (dx, i) {
+    assert.deepStrictEqual(f[3 + i].arcs, [[500 + dx, 66, 4, 0, 2 * Math.PI]], "light " + i);
+    assert.strictEqual(f[3 + i].color, "hsl(" + 72 * i + ", 90%, 60%)");
+  });
+});
+
+test("the lights' hues run on from the hull's and wrap past 360", function () {
+  var ctx = recorder();
+  BO.render.draw(ctx, state([]), view(0, false, 300));
+  var f = ufo(ctx);
+  assert.strictEqual(f[1].color, "hsl(300, 90%, 60%)");
+  assert.strictEqual(f[4].color, "hsl(12, 90%, 60%)");
+  assert.strictEqual(f[5].color, "hsl(84, 90%, 60%)");
 });
 
 test("a brick is drawn at full opacity and full height without a dissolve", function () {

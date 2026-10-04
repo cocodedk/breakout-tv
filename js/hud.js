@@ -4,6 +4,7 @@
   var g = BO.session;
   var DASH = "—";
   var DOT = "●";
+  var HUE_PERIOD = 4000;
   var ctx = null;
 
   function init() {
@@ -11,14 +12,15 @@
   }
 
   /* The HUD row and the playfield, from the session. The wall's fade and the ball's hiding follow
-     from the phase the game is in. */
+     from the phase the game is in; the UFO's hue turns a full circle every 4 seconds. */
   function refresh() {
     var dots = [];
     for (var i = 0; i < g.lives; i++) { dots.push(DOT); }
     BO.screens.text("hud-score", "Score " + g.s.score);
     BO.screens.text("hud-level", "Level " + g.level);
     BO.screens.text("hud-lives", "Lives " + dots.join(" "));
-    BO.render.draw(ctx, g.s, { fade: BO.phases.fade(), ballHidden: BO.phases.timed() });
+    var hue = (performance.now() / HUE_PERIOD * 360) % 360;
+    BO.render.draw(ctx, g.s, { fade: BO.phases.fade(), ballHidden: BO.phases.timed(), hue: hue });
   }
 
   /* Serve, Moving, Dissolve or Banner: the launch hint and the level banner follow it. */
