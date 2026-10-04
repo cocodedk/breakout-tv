@@ -1,5 +1,5 @@
-/* Breakout drive: with Web Audio replaced by a recording shim, a paddle hit, a brick hit and a lost
-   ball each start one tone; a UFO hit starts its four layers; after M none do, "Sound off" shows,
+/* Breakout drive: with Web Audio replaced by a recording shim, a paddle hit and a brick hit each
+   start one tone and a lost ball starts none; a UFO hit starts its four layers; after M none do, "Sound off" shows,
    and the setting survives a reload. */
 "use strict";
 var assert = require("node:assert");
@@ -87,7 +87,7 @@ runDrive(async function (browser, url) {
   var page = await h.openPage(context, url);
   await h.startGame(page);
   assert.ok(!(await page.isVisible("#hud-sound")), "sound is on at first");
-  assert.deepStrictEqual(await playThree(page), [1, 1, 1], "each event starts one tone");
+  assert.deepStrictEqual(await playThree(page), [1, 1, 0], "a hit starts one tone, a lost ball none");
   await page.evaluate(function () { window.__notes.length = 0; });
   assert.strictEqual(await coreHit(page), 5, "a core hit starts its layers once");
   var notes = await page.evaluate(function () { return window.__notes.slice(0, 5); });
@@ -109,7 +109,7 @@ runDrive(async function (browser, url) {
   assert.deepStrictEqual(await playThree(again), [0, 0, 0], "and so does the silence");
   await h.tap(again, K.M);
   assert.ok(!(await again.isVisible("#hud-sound")));
-  assert.deepStrictEqual(await playThree(again), [1, 1, 1], "M turns it back on");
+  assert.deepStrictEqual(await playThree(again), [1, 1, 0], "M turns it back on");
   assert.deepStrictEqual(again.errors, []);
   await again.close();
 
@@ -139,7 +139,7 @@ runDrive(async function (browser, url) {
   await h.seed(third, { lives: 1, ball: { x: 100, y: 600, vx: 0, vy: 720 } });
   await third.clock.runFor(1000);
   assert.strictEqual((await h.snap(third)).screen, "over");
-  assert.strictEqual((await tones(third)) - before, 3, "the lost ball and two falling notes");
+  assert.strictEqual((await tones(third)) - before, 2, "the two falling notes, nothing for the lost ball");
   assert.deepStrictEqual(third.errors, []);
   console.log("sound drive: ok");
 }).catch(function (e) { console.error(e); process.exit(1); });

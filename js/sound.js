@@ -10,7 +10,6 @@
     paddle: [["square", 440, 440, 0.06]],
     brick: [["square", 660, 660, 0.05]],
     wall: [["square", 330, 330, 0.04]],
-    lost: [["sawtooth", 400, 100, 0.4]],
     cleared: [["square", 523, 523, 0.12], ["square", 659, 659, 0.12], ["square", 784, 784, 0.12]],
     over: [["square", 392, 392, 0.25], ["square", 262, 262, 0.25]]
   };
