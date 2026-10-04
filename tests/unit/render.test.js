@@ -11,8 +11,9 @@ require("../../js/render.js");
 
 /* A canvas context that records the fills: the colour, the opacity and the shape of each. */
 function recorder() {
-  var ctx = { fills: [], globalAlpha: 1, path: null };
-  ctx.fillRect = function () {};
+  var ctx = { fills: [], globalAlpha: 1, path: null, calls: [] };
+  ctx.clearRect = function (x, y, w, h) { ctx.calls.push(["clearRect", x, y, w, h]); };
+  ctx.fillRect = function (x, y, w, h) { ctx.calls.push(["fillRect", x, y, w, h]); };
   ctx.beginPath = function () { ctx.path = { arcs: [], ellipses: [], moves: [] }; };
   ctx.arc = function (x, y, r, from, to) { ctx.path.arcs.push([x, y, r, from, to]); };
   ctx.ellipse = function (x, y, rx, ry) { ctx.path.ellipses.push([x, y, rx, ry]); };
@@ -50,6 +51,13 @@ function ufo(ctx) {
     return p && Math.abs(p[0] - 500) <= 60 && p[1] < 100;
   });
 }
+
+test("a frame starts by clearing the playfield and never fills all of it", function () {
+  var ctx = recorder();
+  BO.render.draw(ctx, state([BO.levels.brick(0, 0, "R")]), view());
+  assert.deepStrictEqual(ctx.calls[0], ["clearRect", 0, 0, 1600, 880]);
+  assert.ok(!ctx.calls.some(function (c) { return c[0] === "fillRect"; }), "nothing paints a background");
+});
 
 test("the UFO is a glow, a hull, a dome and five lights, drawn in that order", function () {
   var ctx = recorder();

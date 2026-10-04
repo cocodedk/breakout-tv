@@ -88,7 +88,6 @@
   /* A lost ball costs a life: the next serve, or the end of the game. */
   function lose() {
     g.lives -= 1;
-    sound.play("lost");
     if (g.lives > 0) {
       physics.serve(g.s);
       setState("serve");
