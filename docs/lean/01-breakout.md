@@ -51,7 +51,8 @@ sits over a screen.
    - **Moving**: the ball flies; the hint is hidden.
    - **Level banner**: when the last breakable brick of a level falls, "Level N" (`#play-banner`,
      96px, `#ffd447`) shows for 1.5 s with the ball frozen, then the next level's wall appears in
-     Serve. Keys other than Back and P do nothing during the banner.
+     Serve. Keys other than Back, P and M do nothing during the banner (M toggles sound at any time,
+     as Sound says).
    - Back or P opens the pause dialog from any sub-state.
 3. **Game over** (`#screen-over`). "Game over" (120px), "Score 1234" (64px), "Best score 1234"
    (40px), and "New best!" (`#over-new-best`, `#ffd447`, 40px) only when this game beat the saved
@@ -98,15 +99,19 @@ Key codes, read from `event.keyCode`:
 ## The game
 
 - **Paddle**: 240×24, its top at y 816, centred at start of every serve. Kept inside the playfield.
-- **Ball**: radius 12. Launches from the paddle at 720 px/s, 30° to the right of straight up.
+- **Ball**: radius 12. Launches from the paddle 30° to the right of straight up, at the current
+  speed (see Speed), every launch: at the start of a level and after a lost life alike.
 - **Walls**: the left, right and top edges reflect the ball. Passing the bottom edge loses it.
 - **Paddle bounce**: when the ball comes down onto the paddle's top, it leaves upward at an angle
   from vertical of 60° × (offset), where offset is (ball x − paddle centre x) / 120, clamped to
   [−1, 1]. The speed is kept. A ball that hits the paddle's side while still going down is not
   saved.
-- **Speed**: after every 10 bricks broken in a level, the ball's speed rises by 5%, capped at
-  1200 px/s. Each new level starts at 720 px/s × 1.1 ^ (loop), where loop counts how many times
-  all three levels have been cleared (0 at first), capped at 1200 px/s.
+- **Speed**: the current speed is the level's start speed, 720 px/s × 1.1 ^ (loop), where loop
+  counts how many times all three levels have been cleared (0 at first), raised by 5% for every
+  10 bricks broken so far in this level (compounded), and never above 1200 px/s. A lost life keeps
+  it: the next launch uses the same current speed. A new level resets it to that level's start
+  speed. A rise that happens mid-flight changes the moving ball's speed at once, keeping its
+  direction.
 - **Bricks**: 12 columns of 120×40, 8px apart, the wall starting at x 36 and y 96, rows 48px apart.
   Ball and brick: the ball reflects on the axis of the smaller overlap, and at most one brick is hit
   per physics step.
