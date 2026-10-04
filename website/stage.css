@@ -1,41 +1,23 @@
-/* The hero TV: a CSS-only Breakout screen. The ball bounces on two linear alternating tracks (x and y),
-   and the paddle follows the same x track, so it always sits under the ball. --w is the screen width. */
-.tv { --w: calc(100vw - 2 * var(--gutter) - 24px); width: 100%; margin: 0; padding: 12px; border-radius: 22px; background: linear-gradient(#1c2552, #111838); box-shadow: 0 0 0 2px #2b366d, 0 28px 60px rgba(0, 0, 0, .55); }
-.tv::after { content: ""; display: block; width: 34%; height: 12px; margin: 12px auto -24px; border-radius: 0 0 10px 10px; background: #1a2350; }
-.screen { --d: calc(var(--w) * .026); --pw: calc(var(--w) * .2); --ph: calc(var(--w) * .03); --gap: calc(var(--w) * .005);
-  position: relative; width: 100%; aspect-ratio: 16 / 9; overflow: hidden; border-radius: 10px; background: var(--stage); box-shadow: inset 0 0 0 2px var(--edge); }
-.screen::after { content: ""; position: absolute; inset: 0; pointer-events: none;
-  background: repeating-linear-gradient(0deg, rgba(0, 0, 0, .18) 0 1px, transparent 1px 3px); box-shadow: inset 0 0 calc(var(--w) * .08) rgba(0, 0, 0, .55); }
-.hud { position: absolute; inset: 3.5% 5% auto; display: flex; justify-content: space-between; font: 700 max(9px, calc(var(--w) * .03))/1 sans-serif; }
-.lives i { display: inline-block; width: .75em; height: .75em; margin-inline-start: .4em; border-radius: 50%; background: #fff; }
-.play { position: absolute; inset: 0 4%; }
-.wall { position: absolute; left: 0; right: 0; top: 15%; height: 28%; display: flex; flex-direction: column; gap: var(--gap); }
-.row { flex: 1; display: flex; gap: var(--gap); }
-.row i { flex: 1; border-radius: calc(var(--w) * .004); background: var(--c); }
-.row:nth-child(1) { --c: var(--red); }
-.row:nth-child(2) { --c: var(--orange); }
-.row:nth-child(3) { --c: var(--yellow); }
-.row:nth-child(4) { --c: var(--green); }
-.row:nth-child(5) { --c: var(--blue); }
-.field { position: absolute; left: 0; right: 0; top: 43.5%; height: 44.5%; }
-.bx, .by { position: absolute; left: 0; top: 0; }
-.bx { width: calc(100% - var(--d)); height: calc(100% - var(--d)); animation: sx 5.3s linear infinite alternate; }
-.by { width: 100%; height: 100%; animation: sy 3.1s linear infinite alternate; }
-.ball { position: absolute; left: 0; top: 0; width: var(--d); height: var(--d); border-radius: 50%; background: #fff; box-shadow: 0 0 calc(var(--d) * .9) rgba(255, 255, 255, .5); }
-.px { position: absolute; left: 0; top: 88%; width: calc(100% - var(--pw)); height: var(--ph); animation: sx 5.3s linear infinite alternate; }
-.paddle { display: block; width: var(--pw); height: 100%; border-radius: calc(var(--ph) * .3); background: #fff; }
-.row:nth-child(5) i:nth-child(3), .row:nth-child(5) i:nth-child(8), .row:nth-child(4) i:nth-child(6), .row:nth-child(5) i:nth-child(11) { animation: pop 19s ease-in-out infinite; }
-.row:nth-child(5) i:nth-child(8) { animation-delay: -5s; }
-.row:nth-child(4) i:nth-child(6) { animation-delay: -9s; }
-.row:nth-child(5) i:nth-child(11) { animation-delay: -14s; }
-@keyframes sx { to { transform: translateX(100%); } }
-@keyframes sy { to { transform: translateY(100%); } }
-@keyframes pop { 0%, 30% { opacity: 1; transform: none; } 34% { transform: scale(1.18); } 40%, 90% { opacity: 0; transform: scale(.5); } 96%, 100% { opacity: 1; transform: none; } }
-@media (prefers-reduced-motion: reduce) {
-  .bx, .by, .px, .row i { animation: none; }
-  .bx, .px { transform: translateX(42%); }
-  .by { transform: translateY(55%); }
+/* The hero TV: a real 1920x1080 screenshot in a television bezel on a stand. Behind it, a glow in the
+   UFO's rainbow that turns a full circle every 4 seconds, as the UFO's own lights do in the game. */
+.set { position: relative; margin: 0; padding-bottom: 34px; isolation: isolate; }
+.set::before { content: ""; position: absolute; z-index: -1; left: -3%; right: -3%; top: 2%; bottom: 16%; border-radius: 40%;
+  background: var(--rainbow); opacity: .55; filter: blur(44px); animation: ufo-glow 4s linear infinite; }
+@keyframes ufo-glow { to { filter: blur(44px) hue-rotate(360deg); } }
+.tv { position: relative; padding: 10px; border-radius: 18px; background: linear-gradient(#232d5e, #10173a);
+  box-shadow: 0 0 0 2px #2f3a74, 0 30px 60px rgba(0, 0, 0, .6); }
+.tv img { width: 100%; border-radius: 8px; box-shadow: inset 0 0 0 2px var(--edge); }
+/* a faint scanline sheen over the panel, so it reads as a screen and not a flat picture */
+.tv::after { content: ""; position: absolute; top: 10px; right: 10px; bottom: 10px; left: 10px; border-radius: 8px; pointer-events: none;
+  background: linear-gradient(160deg, rgba(255, 255, 255, .07), transparent 40%), repeating-linear-gradient(0deg, rgba(0, 0, 0, .12) 0 1px, transparent 1px 3px); }
+.stand { position: absolute; left: 50%; bottom: 0; width: 30%; height: 34px; transform: translateX(-50%); }
+.stand::before { content: ""; position: absolute; left: 42%; right: 42%; top: 0; height: 22px; background: #1a2350; }
+.stand::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 12px; border-radius: 6px 6px 3px 3px; background: linear-gradient(#232d5e, #141b42); }
+
+@media (min-width: 768px) {
+  .tv { padding: 14px; border-radius: 22px; }
+  .tv::after { top: 14px; right: 14px; bottom: 14px; left: 14px; }
 }
-@media (min-width: 680px) { .tv { --w: 640px; max-width: 664px; } }
-@media (min-width: 1024px) { .tv { --w: 516px; width: 540px; margin-inline-start: auto; } }
-@media (min-width: 1200px) { .tv { --w: 576px; width: 600px; } }
+@media (prefers-reduced-motion: reduce) {
+  .set::before { animation: none; }
+}
