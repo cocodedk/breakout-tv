@@ -1,4 +1,4 @@
-/* Breakout game: the animation loop and what happens when the ball is lost or a wall is cleared.
+/* Breakout game: the animation loop and what happens when the ball is lost or the core is hit.
    The loop runs only while Play shows with no dialog over it. State lives in session.js. */
 (function (BO) {
   "use strict";
@@ -8,12 +8,13 @@
   var screens = BO.screens;
   var sound = BO.sound;
   var store = BO.store;
+  var outcomes = BO.outcomes;
   var g = BO.session;
 
   var STEP = 1 / 240;
   var MAX_FRAME = 0.05;
   var BANNER_MS = 1500;
-  var BEST_KEY = "breakout.best";
+  var DISSOLVE_MS = outcomes.DISSOLVE_MS;
 
   var refresh = BO.hud.refresh;
   var setState = BO.hud.setState;
@@ -25,12 +26,17 @@
 
   /* Back to the title; the best score is read again, so without storage it shows a dash. */
   function toTitle() {
-    g.best = score.parseBest(store.get(BEST_KEY));
+    g.best = score.parseBest(store.get(outcomes.BEST_KEY));
     BO.hud.showTitle();
   }
 
   function running() {
     return screens.current() === "play" && !screens.dialog();
+  }
+
+  /* The dissolve and the banner run on their own clock and take no keys but Back, P and M. */
+  function timed() {
+    return g.state === "dissolve" || g.state === "banner";
   }
 
   function schedule() {
@@ -41,7 +47,9 @@
   function loadLevel() {
     g.s.bricks = levels.build(g.level);
     g.s.broken = 0;
+    g.fade = null;
     g.speed = score.speed(g.loop, 0);
+    physics.resetCore(g.s);
     physics.serve(g.s);
     setState("serve");
   }
@@ -65,27 +73,9 @@
     setState("moving");
   }
 
-  function gameOver() {
-    var result = score.submitBest(g.best, g.s.score);
-    if (result.isNew) { store.set(BEST_KEY, String(result.best)); }
-    g.best = score.parseBest(store.get(BEST_KEY));
-    BO.hud.showOver(result.isNew);
-    sound.play("over", 0.4);
-  }
-
-  function lose() {
-    g.lives -= 1;
-    sound.play("lost");
-    if (g.lives > 0) {
-      physics.serve(g.s);
-      setState("serve");
-    } else {
-      gameOver();
-    }
-  }
-
-  /* After the last brick: the next level, repeating faster after level 3, behind a banner. */
+  /* After the dissolve: the next level, repeating faster after level 3, behind a banner. */
   function clear() {
+    g.s.bricks = [];
     sound.play("cleared", 0.05);
     if (g.level === levels.COUNT) {
       g.level = 1;
@@ -100,14 +90,14 @@
 
   /* Reacts to one step's events. Returns true when the step loop must stop. */
   function react(events) {
-    if (events.indexOf("lost") >= 0) { lose(); return true; }
+    if (events.indexOf("lost") >= 0) { outcomes.lose(); return true; }
     if (events.indexOf("brick") >= 0) {
       g.speed = score.speed(g.loop, g.s.broken);
       physics.setSpeed(g.s.ball, g.speed);
     }
-    var tone = ["brick", "paddle", "wall"].filter(function (e) { return events.indexOf(e) >= 0; })[0];
+    var tone = ["core", "brick", "paddle", "wall"].filter(function (e) { return events.indexOf(e) >= 0; })[0];
     if (tone) { sound.play(tone); }
-    if (events.indexOf("cleared") >= 0) { clear(); return true; }
+    if (events.indexOf("core") >= 0) { outcomes.dissolve(); return true; }
     return false;
   }
 
@@ -126,7 +116,11 @@
   function advance(t) {
     var dt = Math.min(Math.max(t - last, 0) / 1000, MAX_FRAME);
     last = t;
-    if (g.state === "banner") {
+    if (g.state === "dissolve") {
+      g.dissolveLeft -= dt * 1000;
+      g.fade = Math.min(1, Math.max(0, 1 - g.dissolveLeft / DISSOLVE_MS));
+      if (g.dissolveLeft <= 0) { clear(); }
+    } else if (g.state === "banner") {
       g.bannerLeft -= dt * 1000;
       if (g.bannerLeft <= 0) { loadLevel(); }
     } else if (dt > 0) {
@@ -144,7 +138,7 @@
 
   /* A key change takes effect at its own moment, not at the next frame. */
   function holdDown(code, dir) {
-    if (!running() || g.state === "banner") { return; }
+    if (!running() || timed()) { return; }
     var t = now();
     advance(t);
     hold.down(code, dir, t);
@@ -173,7 +167,7 @@
   /* Focus lost or page hidden: every held key is released, and a game in Serve or Moving pauses. */
   function onHidden() {
     hold.release();
-    if (g.state !== "banner") { pause(); }
+    if (!timed()) { pause(); }
   }
 
   function init() {

@@ -17,10 +17,10 @@
     BO.screens.text("hud-score", "Score " + g.s.score);
     BO.screens.text("hud-level", "Level " + g.level);
     BO.screens.text("hud-lives", "Lives " + dots.join(" "));
-    BO.render.draw(ctx, g.s);
+    BO.render.draw(ctx, g.s, g.fade);
   }
 
-  /* Serve, Moving or Banner: the launch hint and the level banner follow it. */
+  /* Serve, Moving, Dissolve or Banner: the launch hint and the level banner follow it. */
   function setState(next) {
     g.state = next;
     BO.screens.setHidden("play-hint", next !== "serve");

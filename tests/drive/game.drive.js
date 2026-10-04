@@ -59,7 +59,8 @@ runDrive(async function (browser, url) {
     return nodes.map(function (n) { return n.textContent; });
   });
   assert.deepStrictEqual(controls, [
-    "Move: ← → or A D", "Launch: Space, Enter or OK", "Pause: P or Back"
+    "Move: ← → or A D", "Launch: Space, Enter or OK", "Pause: P or Back",
+    "Goal: break through and hit the gold core"
   ]);
 
   await h.startGame(page);

@@ -13,7 +13,9 @@
     loop: 0,
     speed: BO.score.startSpeed(0),
     state: "serve",
-    bannerLeft: 0
+    bannerLeft: 0,
+    dissolveLeft: 0,
+    fade: null
   };
 
   g.snapshot = function () {
@@ -29,12 +31,13 @@
       loop: g.loop,
       paddleX: g.s.paddleX,
       ball: { x: b.x, y: b.y, vx: b.vx, vy: b.vy },
-      bricksLeft: g.s.bricks.length
+      bricksLeft: g.s.bricks.length,
+      core: { x: g.s.core.x, y: BO.core.Y, dir: g.s.core.dir }
     };
   };
 
-  /* Sets up a game for the drives: any of score, lives, level, loop, bricks [{col, row, color}]
-     and ball {x, y, vx, vy} (which sends the ball flying). */
+  /* Sets up a game for the drives: any of score, lives, level, loop, bricks [{col, row, color}],
+     core {x, dir} and ball {x, y, vx, vy} (which sends the ball flying). */
   g.seed = function (p) {
     if (p.score !== undefined) { g.s.score = p.score; }
     if (p.lives !== undefined) { g.lives = p.lives; }
@@ -43,9 +46,11 @@
     if (p.bricks) {
       g.s.bricks = p.bricks.map(function (b) { return BO.levels.brick(b.col, b.row, b.color); });
     }
+    if (p.core) { Object.assign(g.s.core, p.core); }
     if (p.ball) {
       Object.assign(g.s.ball, p.ball);
       g.s.serving = false;
+      g.s.ballGone = false;
       BO.hud.setState("moving");
     }
     g.speed = BO.score.speed(g.loop, g.s.broken);
