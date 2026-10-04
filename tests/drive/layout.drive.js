@@ -73,7 +73,7 @@ runDrive(async function (browser, url) {
   await h.seed(page, { lives: 1, ball: { x: 100, y: 600, vx: 0, vy: 720 } });
   await page.clock.runFor(1000);
   assert.strictEqual((await h.snap(page)).screen, "over");
-  await checkLayout(page, "game over with a new best");
+  await checkLayout(page, "game over with a new best and its three choices");
 
   await h.tap(page, K.BACK);
   await h.tap(page, K.BACK);

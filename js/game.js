@@ -39,8 +39,10 @@
     if (!rafId) { rafId = requestAnimationFrame(frame); }
   }
 
-  /* A new wall, the paddle centred, the ball on it, and the level's start speed. */
+  /* A new wall, the paddle centred, the ball on it, and the level's start speed. The score the level
+     begins with is kept, for a retry. */
   function loadLevel() {
+    g.levelStartScore = g.s.score;
     g.s.bricks = levels.build(g.level);
     g.s.broken = 0;
     g.s.core = core.create();
@@ -49,17 +51,24 @@
     setState("serve");
   }
 
-  function start() {
-    g.s.score = 0;
+  /* The level that was lost, again: same loop, full lives, and the score it began with. */
+  function retry() {
+    g.s.score = g.levelStartScore;
     g.lives = g.START_LIVES;
-    g.level = 1;
-    g.loop = 0;
     loadLevel();
     screens.show("play");
     refresh();
     last = now();
     acc = 0;
     schedule();
+  }
+
+  /* A new game is a retry of level 1, loop 0, from score 0. */
+  function start() {
+    g.levelStartScore = 0;
+    g.level = 1;
+    g.loop = 0;
+    retry();
   }
 
   function launch() {
@@ -174,6 +183,7 @@
   BO.game = {
     init: init,
     start: start,
+    retry: retry,
     launch: launch,
     pause: pause,
     resume: resume,

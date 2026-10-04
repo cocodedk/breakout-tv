@@ -36,6 +36,7 @@
   function showOver(isNew) {
     BO.screens.text("over-score", "Score " + g.s.score);
     BO.screens.text("over-best", "Best score " + (g.best > 0 ? g.best : DASH));
+    BO.screens.text("over-retry", "Retry level " + g.level);
     BO.screens.setHidden("over-new-best", !isNew);
     BO.screens.show("over");
   }

@@ -55,10 +55,10 @@ runDrive(async function (browser, url) {
   assert.strictEqual(await h.text(page, "#over-score"), "Score 1230");
   assert.strictEqual(await h.text(page, "#over-best"), "Best score 1230");
   assert.ok(await page.isVisible("#over-new-best"), "a first score beats no best");
-  assert.strictEqual(await page.getAttribute("#over-again", "class"), "choice focused");
+  assert.strictEqual(await page.getAttribute("#over-retry", "class"), "choice focused");
 
   await h.tap(page, K.RIGHT);
-  assert.strictEqual(await page.getAttribute("#over-title", "class"), "choice focused");
+  assert.strictEqual(await page.getAttribute("#over-again", "class"), "choice focused");
   await h.tap(page, K.BACK);
   assert.strictEqual((await h.snap(page)).screen, "title", "Back goes to the title");
   assert.strictEqual(await h.text(page, "#title-best"), "Best score: 1230");
@@ -73,7 +73,7 @@ runDrive(async function (browser, url) {
   assert.strictEqual(await h.text(page, "#over-best"), "Best score 1230");
   await h.tap(page, K.ENTER);
   snap = await h.snap(page);
-  assert.deepStrictEqual([snap.screen, snap.state, snap.score, snap.lives], ["play", "serve", 0, 3], "Play again");
+  assert.deepStrictEqual([snap.screen, snap.state, snap.score, snap.lives], ["play", "serve", 0, 3], "Retry level 1");
 
   // Hitting the core dissolves the wall, shows the level banner, then the level 2 wall in Serve.
   await h.seed(page, CORE_HIT);

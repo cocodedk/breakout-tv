@@ -14,6 +14,7 @@
   }
 
   var PICK = {
+    "over-retry": game.retry,
     "over-again": game.start,
     "over-title": game.toTitle,
     "pause-resume": game.resume,
