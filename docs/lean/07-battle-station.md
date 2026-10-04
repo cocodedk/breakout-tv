@@ -27,7 +27,7 @@ returned.
 - `js/levels.js` gains a fourth layout, doubled like the others (spec 02), its rows starting at
   y 260 (lower than the other levels, to leave room for the station) and 28px apart:
   `LLLLLLLLLLLL`, `DDDDDDDDDDDD`, `LL.LL..LL.LL`, `SSSSSSSSSSSS`, `DDDDDDDDDDDD`, `LLLLLLLLLLLL`.
-  So 12 rows and 132 bricks (24 silver).
+  So 12 rows and 136 bricks (24 silver): the third line has 8 bricks, the others 12.
 - Two new brick colours: `L` light grey `#9aa3b5` worth 30, and `D` dark grey `#5b6378` worth 20.
   Silver `S` is as before.
 - `COUNT` becomes 4: after level 4 comes level 1 with the loop count one higher (spec 01's rule,
@@ -72,7 +72,8 @@ returned.
 - A bolt that leaves the playfield (any edge) is removed. A green bolt that gets past the paddle
   does nothing else: no life lost, no penalty.
 - When the level ends (the ball hits the station), every bolt is removed at once. A lost ball does
-  not remove bolts.
+  not remove bolts: in Serve the bolts already flying keep moving, can still be batted back and can
+  still score; only the firing timer waits for the next launch.
 
 ## Sounds
 
@@ -82,6 +83,11 @@ Following spec 01's tones (5 ms attack and release, the M switch):
 - `reflect`: square wave 660 → 1320 Hz, 0.08 s, peak 0.15.
 - `station-hit`: white noise (the UFO's noise buffer) through a low-pass filter falling from 3000 to
   300 Hz over 0.2 s, peak 0.2, together with a sine 200 → 80 Hz, 0.25 s, peak 0.2.
+
+## The title
+
+Unchanged: the goal line still reads "Goal: break through and hit the UFO", which is true for
+levels 1 to 3, and the earlier tests of the title keep what they demand. Level 4 is a surprise.
 
 ## Code shape
 
@@ -105,7 +111,7 @@ keeps what it demands.
 ## Acceptance tests
 
 1. `npm run check` passes: the compatibility lint, the unit tests and every drive.
-2. Unit tests of `js/levels.js`: level 4 has 132 bricks in 12 rows from y 260, 24 silver; `L` is
+2. Unit tests of `js/levels.js`: level 4 has 136 bricks in 12 rows from y 260, 24 silver; `L` is
    worth 30 and `D` 20; `COUNT` is 4.
 3. Unit tests of `js/station.js`: the first shot 2.0 s after launch and then every 3.0 s; no shot
    outside Moving; a shot skipped while 2 bolts fly; a new bolt leaves (840, 100) at 600 px/s aimed
@@ -118,7 +124,7 @@ keeps what it demands.
    above, the charging dot only while charging, bolts green going down and gold coming back.
 5. A drive at 1920×1080 with Playwright's clock:
    - Seed level 4: the station is shown, there is no UFO (`snapshot().core` plays no part and
-     `station` is set), and the wall has 132 bricks.
+     `station` is set), and the wall has 136 bricks.
    - After launch, the first bolt appears at 2.0 s ± one frame and flies towards the paddle.
    - With the paddle placed under the bolt, the bolt turns back (`back` true) and, aimed from the
      paddle's centre, reaches the station: the score rises by 1000.
