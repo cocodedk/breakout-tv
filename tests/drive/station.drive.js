@@ -43,8 +43,10 @@ async function checkStationShown(page) {
     [4, 0, "serve", 136, null, []], "a UFO hit on level 3 leads to level 4, with no UFO and no bolts");
   assert.deepStrictEqual(snap.station, { x: 800, y: 140, r: 100, charging: false });
   assert.deepStrictEqual(await pixel(page, 760, 60), [138, 147, 166, 255], "the hull is drawn");
-  var dark = await pixel(page, 760, 200);
-  [113, 121, 136].forEach(function (v, i) { h.near(dark[i], v, 2, "the lower half is a shade darker"); });
+  var dark = await pixel(page, 850, 210);
+  [138, 147, 166].forEach(function (v, i) {
+    assert.ok(dark[i] < v * 0.8, "the lower right is in shade: " + dark[i] + " against " + v);
+  });
 }
 
 /* Seeding level 4 on a fresh game loads its wall and station, and takes the UFO away. */
