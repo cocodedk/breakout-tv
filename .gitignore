@@ -1,0 +1,8 @@
+node_modules
+dist/
+*.wgt
+certs/
+*.p12
+shots/
+scratchpad/
+.zvec-grep/

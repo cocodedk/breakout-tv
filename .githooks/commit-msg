@@ -1,0 +1,16 @@
+#!/bin/sh
+set -eu
+
+# Only the subject line is checked. Merge, revert, fixup and squash commits that git writes
+# itself are let through.
+subject=$(head -n 1 "$1")
+case "$subject" in
+  "Merge "*|'Revert "'*|"fixup! "*|"squash! "*) exit 0 ;;
+esac
+
+if ! printf '%s\n' "$subject" | grep -qE '^(feat|fix|chore|docs|style|refactor|test|ci|build|perf|revert)(\(.+\))?: .+'; then
+  echo "ERROR: the commit message must follow Conventional Commits." >&2
+  echo "  Example: feat(paddle): hold to move" >&2
+  echo "  Types: feat|fix|chore|docs|style|refactor|test|ci|build|perf|revert" >&2
+  exit 1
+fi

@@ -1,0 +1,14 @@
+{
+  "name": "breakout-tv",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Breakout for a Samsung Tizen TV, played with a keyboard or the remote",
+  "scripts": {
+    "check": "node tools/lint.js && node --test tests/unit/*.test.js && for f in tests/drive/*.drive.js; do node \"$f\" || exit 1; done",
+    "stage": "node tools/stage.js"
+  },
+  "devDependencies": {
+    "acorn": "8.18.0",
+    "playwright": "1.63.0"
+  }
+}

@@ -1,0 +1,192 @@
+<!doctype html>
+<!-- SEO keywords:
+     primary:   Breakout for Samsung TV
+     secondary: Tizen brick breaker game, sideload .wgt Samsung TV, keyboard game for Samsung TV
+     intent:    transactional (download), with informational install steps
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Breakout for Samsung TV: Free Tizen Brick Breaker · Cocode</title>
+  <meta name="description" content="Play Breakout on your Samsung TV with a USB keyboard or the remote. A free, open-source Tizen brick breaker: sideload the .wgt in developer mode and start." />
+  <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#070b1e" />
+  <link rel="canonical" href="https://breakout.cocode.dk/" />
+  <link rel="alternate" hreflang="en" href="https://breakout.cocode.dk/" />
+  <link rel="alternate" hreflang="fa" href="https://breakout.cocode.dk/fa/" />
+  <link rel="alternate" hreflang="x-default" href="https://breakout.cocode.dk/" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="apple-touch-icon" href="icon.png" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Breakout" />
+  <meta property="og:title" content="Breakout for Samsung TV: play it with a keyboard or the remote" />
+  <meta property="og:description" content="The classic brick breaker for 2021 Samsung TVs. Plug in a keyboard or use the remote. Free, open source, sideloaded in developer mode." />
+  <meta property="og:url" content="https://breakout.cocode.dk/" />
+  <meta property="og:image" content="https://breakout.cocode.dk/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="A wall of red, orange, yellow, green and blue bricks above the word Breakout, a white ball and a white paddle on a navy screen." />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:locale:alternate" content="fa_IR" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Breakout for Samsung TV: play it with a keyboard or the remote" />
+  <meta name="twitter:description" content="The classic brick breaker for 2021 Samsung TVs. Plug in a keyboard or use the remote. Free, open source, sideloaded in developer mode." />
+  <meta name="twitter:image" content="https://breakout.cocode.dk/og.png" />
+  <meta name="twitter:image:alt" content="A wall of red, orange, yellow, green and blue bricks above the word Breakout, a white ball and a white paddle on a navy screen." />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Breakout",
+    "description": "The classic brick breaker for 2021 Samsung TVs, played with a USB keyboard or the TV remote. A free, open-source Tizen web app you sideload as a .wgt in developer mode.",
+    "url": "https://breakout.cocode.dk/",
+    "downloadUrl": "https://github.com/cocodedk/breakout-tv/releases/latest",
+    "applicationCategory": "GameApplication",
+    "operatingSystem": "Tizen 6.0 (Samsung Smart TV)",
+    "inLanguage": ["en", "fa"],
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "author": {
+      "@type": "Person",
+      "name": "Babak Bandpey",
+      "url": "https://cocode.dk",
+      "sameAs": ["https://linkedin.com/in/babakbandpey", "https://github.com/cocodedk"]
+    },
+    "codeRepository": "https://github.com/cocodedk/breakout-tv"
+  }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Hanken+Grotesk:wght@400;600;800&display=swap" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="stage.css" />
+  <link rel="stylesheet" href="parts.css" />
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="wrap top">
+  <a class="brand" href="./"><img src="favicon.svg" width="32" height="32" alt="" />Breakout</a>
+  <nav class="nav" aria-label="Main">
+    <a href="#game">The game</a><a href="#controls">Controls</a><a href="#install">Install</a><a href="#dev">Under the hood</a>
+  </nav>
+  <a class="lang-switch" href="fa/" hreflang="fa" lang="fa">فارسی</a>
+</header>
+<main id="main">
+  <section class="wrap hero">
+    <div>
+      <h1><span class="wm">Breakout</span><span class="sub">for Samsung TV</span></h1>
+      <p class="lede">The classic brick breaker, built as a Tizen web app for 2021 Samsung TVs. Plug a keyboard into the TV or pick up the remote, launch the ball and clear the wall.</p>
+      <p class="cta">
+        <a class="btn btn-main" href="https://github.com/cocodedk/breakout-tv/releases/latest" target="_blank" rel="noreferrer">Download the app</a>
+        <a class="btn" href="https://github.com/cocodedk/breakout-tv" target="_blank" rel="noreferrer">Source on GitHub</a>
+      </p>
+      <p class="fine">Free and open source. Built for 2021 Samsung TVs (Tizen 6.0) with developer mode switched on.</p>
+    </div>
+    <figure class="tv" role="img" aria-label="An animated Breakout screen: a ball bounces between a wall of coloured bricks and a white paddle.">
+      <div class="screen" dir="ltr" aria-hidden="true">
+        <div class="hud"><span>Score 4250</span><span>Level 1</span><span class="lives">Lives<i></i><i></i><i></i></span></div>
+        <div class="play">
+          <div class="wall">
+            <div class="row"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            <div class="row"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            <div class="row"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            <div class="row"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            <div class="row"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          </div>
+          <div class="field"><div class="bx"><div class="by"><span class="ball"></span></div></div></div>
+          <div class="px"><span class="paddle"></span></div>
+        </div>
+      </div>
+    </figure>
+  </section>
+
+  <div class="strip" aria-hidden="true"></div>
+
+  <section class="wrap sec" id="game">
+    <h2>What's in the game</h2>
+    <p class="intro">Three levels of bricks, three lives and a score to beat. It plays like the arcade original, sized for a sofa.</p>
+    <ul class="feat">
+      <li><h3>Paddle and ball</h3><p>Hold a key and the paddle glides. Let go and it stops. Where the ball hits the paddle decides which way it flies next.</p></li>
+      <li><h3>Coloured bricks</h3><p>Rows of red, orange, yellow, green and blue, plus silver bricks that take two hits. The higher the row, the more it scores.</p></li>
+      <li><h3>Three levels</h3><p>A solid wall, a checkerboard, then a silver-topped funnel. Clear all three and they come round again, faster.</p></li>
+      <li><h3>Lives and score</h3><p>You get three lives. Miss the ball and one goes. Your best score is saved on the TV.</p></li>
+      <li><h3>Arcade beeps</h3><p>A short tone for every bounce, break and miss. Press M to mute.</p></li>
+      <li><h3>Keyboard or remote</h3><p>Both work at once. Nothing to pair and no phone app.</p></li>
+      <li><h3>Made for the sofa</h3><p>The screen is a fixed 1920×1080 and no text is smaller than 28 pixels.</p></li>
+      <li><h3>Fully offline</h3><p>No account, no ads, no network access. The app holds only its own files.</p></li>
+    </ul>
+  </section>
+
+  <section class="wrap sec" id="controls">
+    <h2>Controls</h2>
+    <p class="intro">Plug any USB keyboard into the TV, or just use the remote.</p>
+    <div class="pads">
+      <div class="pad">
+        <h3>Keyboard</h3>
+        <dl>
+          <dt>Move</dt><dd><span class="grp"><kbd>←</kbd><kbd>→</kbd></span> or <span class="grp"><kbd>A</kbd><kbd>D</kbd></span></dd>
+          <dt>Launch the ball</dt><dd><kbd>Space</kbd> or <kbd>Enter</kbd></dd>
+          <dt>Pause</dt><dd><kbd>P</kbd> or <kbd>Esc</kbd></dd>
+          <dt>Mute</dt><dd><kbd>M</kbd></dd>
+          <dt>Pick in menus</dt><dd><span class="grp"><kbd>↑</kbd><kbd>↓</kbd></span> or <span class="grp"><kbd>W</kbd><kbd>S</kbd></span> then <kbd>Enter</kbd></dd>
+        </dl>
+      </div>
+      <div class="pad remote">
+        <h3>TV remote</h3>
+        <dl>
+          <dt>Move</dt><dd><span class="grp"><kbd>←</kbd><kbd>→</kbd></span></dd>
+          <dt>Launch the ball</dt><dd><kbd>OK</kbd></dd>
+          <dt>Pause</dt><dd><kbd>Back</kbd></dd>
+          <dt>Pick in menus</dt><dd><span class="grp"><kbd>↑</kbd><kbd>↓</kbd></span> then <kbd>OK</kbd></dd>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap sec" id="install">
+    <h2>Install it on your TV</h2>
+    <p class="intro">Breakout isn't in the Samsung app store, so you sideload it from a computer on the same network as the TV.</p>
+    <ol class="steps">
+      <li><span class="n" aria-hidden="true">1</span><h3>Turn on developer mode</h3><p>On the TV, open Apps, press 1 2 3 4 5 on the remote and switch Developer mode on. Type in your computer's IP address, then restart the TV.</p></li>
+      <li><span class="n" aria-hidden="true">2</span><h3>Make a signing certificate</h3><p>Samsung TVs install only signed apps. Create a certificate profile with the Tizen command-line tools. If the TV turns it down later, make a Samsung certificate that lists your TV's DUID.</p></li>
+      <li><span class="n" aria-hidden="true">3</span><h3>Package the app</h3><p>Clone the repository, stage the app and package it with your profile.</p>
+<pre>git clone https://github.com/cocodedk/breakout-tv.git
+cd breakout-tv
+npm run stage
+tizen package -t wgt -s MyProfile -- dist/app</pre></li>
+      <li><span class="n" aria-hidden="true">4</span><h3>Install and launch</h3><p>Use your TV's address and the device name that <code>sdb devices</code> prints. Some TVs also want "Permit to install applications" from Tizen Studio's Device Manager before the first install.</p>
+<pre>sdb connect 192.168.1.50:26101
+tizen install -n Breakout.wgt -t MyTV -- dist/app
+tizen run -p BreakoutTV.Breakout -t MyTV</pre></li>
+    </ol>
+    <p class="note">The <a href="https://github.com/cocodedk/breakout-tv/releases/latest" target="_blank" rel="noreferrer">releases page</a> has the app as an unsigned zip, <code>breakout-tv-app.zip</code>. Unzip it and package its <code>app</code> folder with your own profile, as in step 3.</p>
+  </section>
+
+  <section class="wrap sec" id="dev">
+    <h2>Under the hood</h2>
+    <p class="intro">A Tizen TV app is a website in a zip file with a <code>config.xml</code>. Breakout is plain HTML, CSS and JavaScript running in the TV's built-in browser.</p>
+    <dl class="specs">
+      <div><dt>A browser that never updates</dt><dd>A 2021 TV runs Chromium 76 and stays there. The code avoids newer syntax such as <code>?.</code> and <code>??</code>, and a lint step rejects it.</dd></div>
+      <div><dt>No build step</dt><dd>Classic script tags share one <code>window.BO</code> namespace. No modules, no bundler, no framework, no runtime packages.</dd></div>
+      <div><dt>One handler for both inputs</dt><dd>A USB keyboard and the remote both send key events. The game reads <code>keyCode</code>, which the TV's browser fills in reliably. Back is 10009 on the remote and Esc on a keyboard.</dd></div>
+      <div><dt>Fixed physics steps</dt><dd>The ball moves in steps of 1/240 second, so a fast ball never slips through a brick.</dd></div>
+      <div><dt>Tested without a TV</dt><dd><code>npm run check</code> runs the compatibility lint, unit tests for physics and scoring, and Playwright drives that play the game at 1920×1080 with synthetic keys.</dd></div>
+    </dl>
+    <p class="more"><a href="https://github.com/cocodedk/breakout-tv" target="_blank" rel="noreferrer">Read the code on GitHub</a></p>
+  </section>
+
+  <section class="wrap finale">
+    <h2>Get Breakout</h2>
+    <p class="intro">The latest release and the full source are on GitHub. Found a bug on your TV model? Open an issue.</p>
+    <p class="cta">
+      <a class="btn btn-main" href="https://github.com/cocodedk/breakout-tv/releases/latest" target="_blank" rel="noreferrer">Download the app</a>
+      <a class="btn" href="https://github.com/cocodedk/breakout-tv/issues" target="_blank" rel="noreferrer">Report a problem</a>
+    </p>
+  </section>
+</main>
+<div class="strip" aria-hidden="true"></div>
+<footer>
+  <p>© 2026 <a href="https://cocode.dk" target="_blank" rel="noreferrer">Cocode</a> &nbsp;|&nbsp; Created by <a href="https://linkedin.com/in/babakbandpey" target="_blank" rel="noreferrer">Babak Bandpey</a></p>
+</footer>
+</body>
+</html>

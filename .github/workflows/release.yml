@@ -1,0 +1,213 @@
+name: Release
+
+# Manual only. Git tags are the canonical version: the highest vX.Y.Z tag plus the bump. Nothing is
+# committed back to main, and with no push or tag trigger the tag created here cannot start this again.
+# Modes, planned before anything changes:
+#   new     the highest tag is released (or there is none): bump it and release the new tag.
+#   recover the highest tag has no published release: finish that tag, never bump again. Re-run the
+#           failed run (same commit) to get here.
+#   verify  the highest tag is released and is this commit: change nothing, only check it.
+# The zip is the unsigned app folder: the Tizen certificate never leaves the owner's machine.
+# "Signed" here means a GitHub build provenance attestation.
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: Semantic version bump (pick minor for the very first release, v0.1.0)
+        required: true
+        default: patch
+        type: choice
+        options: [patch, minor, major]
+
+permissions:
+  contents: write
+  id-token: write
+  attestations: write
+
+# Releases queue up one after the other; a release in flight is never cancelled.
+concurrency:
+  group: release-${{ github.repository }}
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GH_TOKEN: ${{ github.token }}
+      ASSET: breakout-tv-app.zip
+    steps:
+      # Full history and all tags: the version comes from the tags.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Plan the release
+        id: plan
+        env:
+          BUMP: ${{ inputs.bump }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+          DISPATCH_BRANCH: ${{ github.ref_name }}
+        run: |
+          if [ "$DISPATCH_BRANCH" != "$DEFAULT_BRANCH" ]; then
+            echo "Run releases from the default branch ($DEFAULT_BRANCH), not $DISPATCH_BRANCH." >&2
+            exit 1
+          fi
+
+          # none | draft | published
+          release_state() {
+            gh release list --limit 1000 --json tagName,isDraft | jq -r --arg t "$1" \
+              '[.[] | select(.tagName == $t)] | if length == 0 then "none"
+               elif any(.[]; .isDraft | not) then "published" else "draft" end'
+          }
+
+          # Only anchored SemVer tags count (v2-beta, vlatest are ignored), version-sorted.
+          LATEST="$(git tag --list 'v*' |
+            grep -E '^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$' |
+            LC_ALL=C sort -V | tail -n 1 || true)"
+
+          MODE=new
+          if [ -n "$LATEST" ]; then
+            LATEST_SHA="$(git rev-parse "$LATEST^{commit}")"
+            LATEST_STATE="$(release_state "$LATEST")"
+            if [ "$LATEST_STATE" = published ]; then
+              if [ "$LATEST_SHA" = "$GITHUB_SHA" ]; then
+                MODE=verify
+              else
+                git merge-base --is-ancestor "$LATEST_SHA" "$GITHUB_SHA" || {
+                  echo "$LATEST is not an ancestor of $GITHUB_SHA; refusing to release." >&2
+                  exit 1
+                }
+              fi
+            elif [ "$LATEST_SHA" = "$GITHUB_SHA" ]; then
+              MODE=recover
+            else
+              echo "$LATEST is tagged on another commit but has no published release." >&2
+              echo "Re-run the failed run to finish it, or delete that tag if it was a mistake." >&2
+              exit 1
+            fi
+          fi
+
+          if [ "$MODE" = new ]; then
+            BASE="${LATEST:-v0.0.0}"
+            IFS=. read -r MAJOR MINOR PATCH <<<"${BASE#v}"
+            case "$BUMP" in
+              major) MAJOR=$((MAJOR + 1)); MINOR=0; PATCH=0 ;;
+              minor) MINOR=$((MINOR + 1)); PATCH=0 ;;
+              patch) PATCH=$((PATCH + 1)) ;;
+              *) echo "Unknown bump: $BUMP" >&2; exit 1 ;;
+            esac
+            VERSION="$MAJOR.$MINOR.$PATCH"
+          else
+            VERSION="${LATEST#v}"
+          fi
+          TAG="v$VERSION"
+
+          # A new tag must be free, here and on GitHub.
+          if [ "$MODE" = new ]; then
+            if git rev-parse --quiet --verify "refs/tags/$TAG" >/dev/null ||
+               gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$TAG" >/dev/null 2>&1; then
+              echo "$TAG already exists; refusing to create it again." >&2
+              exit 1
+            fi
+          fi
+
+          STATE="$(release_state "$TAG")"
+          echo "Mode $MODE, releasing $TAG from $GITHUB_SHA (release: $STATE)"
+          {
+            echo "mode=$MODE"
+            echo "version=$VERSION"
+            echo "tag=$TAG"
+            echo "release_state=$STATE"
+          } >> "$GITHUB_OUTPUT"
+
+      - if: steps.plan.outputs.mode != 'verify'
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install and run the checks
+        if: steps.plan.outputs.mode != 'verify'
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+          npm run check
+
+      # Stamped in this workspace only, nothing is committed. tools/stage.js reads package.json's version.
+      - name: Stamp the version
+        if: steps.plan.outputs.mode != 'verify'
+        env:
+          VERSION: ${{ steps.plan.outputs.version }}
+        run: |
+          node - <<'JS'
+          var fs = require("fs");
+          var v = process.env.VERSION;
+          var pkg = JSON.parse(fs.readFileSync("package.json", "utf8"));
+          pkg.version = v;
+          fs.writeFileSync("package.json", JSON.stringify(pkg, null, 2) + "\n");
+          var xml = fs.readFileSync("config.xml", "utf8");
+          var re = /(<widget\b[^>]*?\bversion=")[^"]*(")/;
+          if (!re.test(xml)) { throw new Error("config.xml has no widget version"); }
+          fs.writeFileSync("config.xml", xml.replace(re, function (all, a, b) { return a + v + b; }));
+          JS
+          # stage.js marks the stamp "+" when tracked files changed; these two edits are the release.
+          git update-index --skip-worktree package.json config.xml
+
+      - name: Stage, zip and verify the app
+        if: steps.plan.outputs.mode != 'verify'
+        env:
+          VERSION: ${{ steps.plan.outputs.version }}
+        run: |
+          npm run stage
+          rm -f "dist/$ASSET"
+          (cd dist && zip -X -r "$ASSET" app)
+          unzip -l "dist/$ASSET"
+          # Check the artifact before anything is tagged: config.xml's version and a clean build stamp.
+          unzip -p "dist/$ASSET" app/config.xml | tr '\n' ' ' | grep -F "version=\"$VERSION\"" >/dev/null
+          unzip -p "dist/$ASSET" app/index.html | grep -F "Build $VERSION · $(git rev-parse --short HEAD) · " >/dev/null
+
+      - name: Attest the build provenance
+        if: steps.plan.outputs.mode != 'verify'
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-path: dist/${{ env.ASSET }}
+
+      # Tag (a lightweight tag on the release commit, through the API), then draft, check the asset,
+      # publish. A published release is never overwritten.
+      - name: Tag, create or repair the release, then publish
+        if: steps.plan.outputs.mode != 'verify'
+        env:
+          MODE: ${{ steps.plan.outputs.mode }}
+          TAG: ${{ steps.plan.outputs.tag }}
+          STATE: ${{ steps.plan.outputs.release_state }}
+        run: |
+          if [ "$STATE" = published ]; then
+            echo "$TAG already has a published release; refusing to overwrite it." >&2
+            exit 1
+          fi
+          if [ "$MODE" = new ]; then
+            gh api --method POST "repos/$GITHUB_REPOSITORY/git/refs" -f ref="refs/tags/$TAG" -f sha="$GITHUB_SHA"
+          fi
+          if [ "$STATE" = none ]; then
+            gh release create "$TAG" "dist/$ASSET" --draft --verify-tag --generate-notes --title "$TAG"
+          else
+            gh release upload "$TAG" "dist/$ASSET" --clobber
+          fi
+          gh release view "$TAG" --json assets --jq '.assets[].name' | grep -Fx "$ASSET"
+          gh release edit "$TAG" --draft=false --latest
+
+      - name: Verify the published release
+        env:
+          TAG: ${{ steps.plan.outputs.tag }}
+        run: |
+          test "$(gh release view "$TAG" --json isDraft --jq .isDraft)" = false
+          gh release view "$TAG" --json assets --jq '.assets[].name' | grep -Fx "$ASSET"
+          curl --fail --silent --show-error --location --head --retry 5 --retry-delay 5 --retry-all-errors \
+            "https://github.com/$GITHUB_REPOSITORY/releases/latest/download/$ASSET" >/dev/null
+          echo "Released $TAG: https://github.com/$GITHUB_REPOSITORY/releases/tag/$TAG"

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget xmlns="http://www.w3.org/ns/widgets" xmlns:tizen="http://tizen.org/ns/widgets"
+        id="http://cocode.dk/Breakout" version="0.1.0" viewmodes="maximized">
+  <tizen:application id="BreakoutTV.Breakout" package="BreakoutTV" required_version="6.0"/>
+  <tizen:profile name="tv"/>
+  <content src="index.html"/>
+  <icon src="icon.png"/>
+  <name>Breakout</name>
+  <description>Breakout, played with a keyboard or the TV remote</description>
+  <!-- no network: everything the game needs lives in the app -->
+  <tizen:content-security-policy>default-src 'self' data: blob: 'unsafe-inline';</tizen:content-security-policy>
+  <tizen:privilege name="http://tizen.org/privilege/tv.inputdevice"/>
+  <tizen:setting screen-orientation="landscape" background-support="disable"
+                 encryption="disable" hwkey-event="enable"/>
+</widget>

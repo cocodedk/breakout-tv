@@ -1,0 +1,7 @@
+#!/bin/sh
+set -eu
+
+# The fast part of `npm run check`: the compatibility lint and the unit tests.
+# The Playwright drive is slow, so CI runs it (and `npm run check` runs it on demand).
+node tools/lint.js
+node --test tests/unit/*.test.js

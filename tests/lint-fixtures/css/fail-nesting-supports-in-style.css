@@ -1,0 +1,6 @@
+.parent {
+  color: red;
+  @supports (display: flex) {
+    color: blue;
+  }
+}

@@ -1,0 +1,7 @@
+@supports (display: flex) {
+  @supports (color: red) {
+    .a {
+      color: red;
+    }
+  }
+}

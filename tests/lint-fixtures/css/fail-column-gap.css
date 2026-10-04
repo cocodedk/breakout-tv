@@ -1,0 +1,4 @@
+.grid {
+  display: grid;
+  COLUMN-GAP: 8px;
+}

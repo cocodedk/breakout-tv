@@ -1,0 +1,6 @@
+.parent {
+  color: red;
+  &.active {
+    color: green;
+  }
+}

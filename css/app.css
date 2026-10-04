@@ -1,0 +1,32 @@
+/* Breakout: the fixed 1920x1080 stage. */
+html, body {
+  margin: 0;
+  width: 1920px;
+  height: 1080px;
+  overflow: hidden;
+  background: #070b1e;
+  color: #ffffff;
+  font-family: sans-serif;
+}
+
+[hidden] { display: none !important; }
+
+#app { position: relative; width: 1920px; height: 1080px; }
+
+.screen { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+
+#title-name {
+  margin: 0;
+  padding-top: 380px;
+  text-align: center;
+  font-size: 160px;
+  letter-spacing: 12px;
+}
+
+#build-stamp {
+  position: absolute;
+  right: 48px;
+  bottom: 48px;
+  font-size: 28px;
+  opacity: 0.5;
+}

@@ -1,0 +1,31 @@
+# Breakout
+
+> Breakout is the classic brick-breaker game for a 2021 Samsung TV (Tizen 6.0, Chromium 76), packaged as a web app (.wgt) that you sideload in developer mode and play with a keyboard or the TV remote.
+
+It is plain HTML, CSS and JavaScript: classic script tags on one shared namespace (`window.BO`), no bundler, no framework and no runtime packages. The layout is a fixed 1920x1080, and nothing newer than the TV's Chromium 76 engine is used. Releases are unsigned app folders: you sign and install them with your own Tizen certificate.
+
+## Website
+
+- [English site](https://breakout.cocode.dk/): what the game is and how to install it
+- [Persian site](https://breakout.cocode.dk/fa/): the same page in Persian (فارسی)
+
+## Docs
+
+- [README](https://github.com/cocodedk/breakout-tv/blob/main/README.md): controls, how to sideload on a TV, how to build and test
+- [Tizen profile](https://github.com/cocodedk/breakout-tv/blob/main/profile-tizen.md): the checks, the engine limits, and the on-the-TV install steps
+- [House rules](https://github.com/cocodedk/breakout-tv/blob/main/CLAUDE.md): engine, input and screen rules for contributors and agents
+- [Contributing](https://github.com/cocodedk/breakout-tv/blob/main/CONTRIBUTING.md): setup, hooks, branches and the pull request checklist
+
+## Download
+
+- [Latest release](https://github.com/cocodedk/breakout-tv/releases/latest/download/breakout-tv-app.zip): the unsigned app folder, with a build provenance attestation
+
+## Repository
+
+- [Source on GitHub](https://github.com/cocodedk/breakout-tv): code, issues and releases
+- [Security policy](https://github.com/cocodedk/breakout-tv/blob/main/SECURITY.md): how to report a vulnerability
+
+## Optional
+
+- [Author](https://cocode.dk): Babak Bandpey, Cocode
+- [License](https://github.com/cocodedk/breakout-tv/blob/main/LICENSE): Apache-2.0

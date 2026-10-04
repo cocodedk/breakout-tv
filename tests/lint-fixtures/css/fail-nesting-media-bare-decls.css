@@ -1,0 +1,6 @@
+.parent {
+  color: red;
+  @media (min-width: 700px) {
+    color: blue;
+  }
+}

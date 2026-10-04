@@ -1,0 +1,48 @@
+<!doctype html>
+<!-- Source for og.png (1200x630). Render: node scripts via Playwright, see the repo notes. Same palette and type as the site. -->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Breakout OG image</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Hanken+Grotesk:wght@600;800&display=swap" />
+<style>
+  * { box-sizing: border-box; margin: 0; }
+  html, body { width: 1200px; height: 630px; overflow: hidden; background: #070b1e; }
+  body { position: relative; font-family: "Hanken Grotesk", system-ui, sans-serif; color: #eef1ff; }
+  body::after { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(0deg, rgba(0,0,0,.12) 0 1px, transparent 1px 4px); box-shadow: inset 0 0 160px rgba(0,0,0,.6); }
+  .wall { position: absolute; left: 48px; right: 48px; top: 40px; display: flex; flex-direction: column; gap: 8px; }
+  .row { display: flex; gap: 8px; }
+  .row i { flex: 1; height: 34px; border-radius: 5px; background: var(--c); }
+  .row i.gone { visibility: hidden; }
+  .r1 { --c: #ff5a4a; } .r2 { --c: #ffaa3c; } .r3 { --c: #ffd447; } .r4 { --c: #4be38e; } .r5 { --c: #5aa9ff; }
+  .title { position: absolute; left: 52px; top: 270px; font: 400 164px/1 "Bungee", "Arial Black", sans-serif; letter-spacing: .01em; }
+  .tag { position: absolute; left: 56px; top: 438px; font: 800 44px/1.1 "Hanken Grotesk", sans-serif; }
+  .keys { position: absolute; left: 56px; top: 506px; display: flex; align-items: center; gap: 12px; font: 600 26px/1 "Hanken Grotesk", sans-serif; color: #a8b3de; }
+  kbd { display: inline-flex; align-items: center; justify-content: center; min-width: 52px; height: 52px; padding: 0 16px; border: 1px solid #3a4677; border-bottom-width: 5px; border-radius: 10px; background: #1a2350; color: #eef1ff; font: 800 26px/1 "Hanken Grotesk", sans-serif; }
+  kbd.round { border-radius: 999px; background: #263063; border-color: #4a5690; }
+  .keys span { margin: 0 14px 0 2px; }
+  .by { position: absolute; left: 56px; bottom: 24px; font: 600 22px/1 "Hanken Grotesk", sans-serif; color: #a8b3de; }
+  svg { position: absolute; inset: 0; }
+</style>
+</head>
+<body>
+<div class="wall">
+  <div class="row r1"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <div class="row r2"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <div class="row r3"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="gone"></i></div>
+  <div class="row r4"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="gone"></i><i class="gone"></i></div>
+  <div class="row r5"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="gone"></i><i class="gone"></i><i class="gone"></i></div>
+</div>
+<svg width="1200" height="630" viewBox="0 0 1200 630" aria-hidden="true">
+  <path d="M1010 506 L1073 346 L1109 252" fill="none" stroke="#eef1ff" stroke-opacity=".5" stroke-width="4" stroke-linecap="round" stroke-dasharray="2 16"/>
+  <circle cx="1073" cy="346" r="17" fill="#fff"/>
+  <rect x="900" y="522" width="220" height="28" rx="8" fill="#fff"/>
+</svg>
+<div class="title">Breakout</div>
+<div class="tag">Brick breaker for your Samsung TV</div>
+<div class="keys"><kbd>←</kbd><kbd>→</kbd><kbd>Space</kbd><span>on a keyboard</span><kbd class="round">OK</kbd><span>on the remote</span></div>
+<div class="by">Built by Babak Bandpey · cocode.dk · linkedin.com/in/babakbandpey</div>
+</body>
+</html>

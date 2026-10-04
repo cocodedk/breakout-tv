@@ -1,0 +1,7 @@
+.a {
+  content: "line one \
+line two";
+}
+.b {
+  gap: 4px;
+}
