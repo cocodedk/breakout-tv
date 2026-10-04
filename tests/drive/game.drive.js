@@ -58,7 +58,7 @@ runDrive(async function (browser, url) {
   });
   assert.deepStrictEqual(controls, [
     "Move: ← → or A D", "Launch: Space, Enter or OK", "Pause: P or Back",
-    "Goal: break through and hit the UFO"
+    "Goal: break through and hit the UFO", "Level: ← → or A D"
   ]);
 
   await h.startGame(page);

@@ -42,7 +42,8 @@
     else if (dialog === "leave") { menu(action, "left", "right", screens.closeDialog); }
     else if (screen === "over") { menu(action, "left", "right", game.toTitle); }
     else if (screen === "title") {
-      if (action === "confirm") { game.start(); }
+      if (action === "confirm") { game.start(BO.session.chosenLevel); }
+      else if (action === "left" || action === "right") { BO.titleLevel.move(keys.moveDir(action)); }
       else if (action === "back") { screens.openDialog("leave"); }
     } else if (action === "back" || action === "pause") {
       game.pause();

@@ -63,10 +63,10 @@
     schedule();
   }
 
-  /* A new game is a retry of level 1, loop 0, from score 0. */
-  function start() {
+  /* A new game is a retry of the given level (1 by default), loop 0, from score 0. */
+  function start(level) {
     g.levelStartScore = 0;
-    g.level = 1;
+    g.level = level || 1;
     g.loop = 0;
     retry();
   }
@@ -176,6 +176,7 @@
   function init() {
     BO.hud.init();
     phases.init(loadLevel);
+    BO.titleLevel.load();
     toTitle();
   }
 

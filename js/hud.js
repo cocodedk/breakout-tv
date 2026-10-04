@@ -32,8 +32,16 @@
     return g.best > 0 ? BO.score.formatScore(g.best) : DASH;
   }
 
+  /* The level chooser: an arrow is dimmed at the end of the range it points to. */
+  function showLevel() {
+    BO.screens.text("title-level-text", "Level " + g.chosenLevel);
+    document.getElementById("title-level-prev").style.opacity = g.chosenLevel === 1 ? "0.3" : "1";
+    document.getElementById("title-level-next").style.opacity = g.chosenLevel === BO.levels.COUNT ? "0.3" : "1";
+  }
+
   function showTitle() {
     BO.screens.show("title");
+    showLevel();
     BO.screens.text("title-best", "Best score: " + best());
   }
 
@@ -45,5 +53,6 @@
     BO.screens.show("over");
   }
 
-  BO.hud = { init: init, refresh: refresh, setState: setState, showTitle: showTitle, showOver: showOver };
+  BO.hud = { init: init, refresh: refresh, setState: setState, showLevel: showLevel,
+    showTitle: showTitle, showOver: showOver };
 })(window.BO);
