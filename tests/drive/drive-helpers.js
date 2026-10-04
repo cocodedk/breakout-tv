@@ -70,9 +70,13 @@ function near(actual, expected, tolerance, what) {
 
 /* A seed for a core hit: the ball just below the core's strip, flying straight up as the core slides
    into its path, over the given bricks (none by default). */
+/* Two bricks at the far left and right of row 2, out of the ball's way: a wall still standing. */
+var FAR_BRICKS = [{ col: 0, row: 2, color: "R" }, { col: 11, row: 2, color: "R" }];
+
 function atCore(bricks) {
   return { bricks: bricks || [], core: { x: 780, dir: 1 }, ball: { x: 800, y: 110, vx: 0, vy: -720 } };
 }
 
 module.exports = { KEY: KEY, openPage: openPage, down: down, up: up, tap: tap, hold: hold,
-  snap: snap, seed: seed, text: text, startGame: startGame, near: near, atCore: atCore };
+  snap: snap, seed: seed, text: text, startGame: startGame, near: near, atCore: atCore,
+  FAR_BRICKS: FAR_BRICKS };

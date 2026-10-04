@@ -8,7 +8,7 @@ var K = h.KEY;
 var near = h.near;
 
 /* A level with two bricks far from the ball, and the ball just below a core that moves into its path. */
-var AT_CORE = h.atCore([{ col: 0, row: 2, color: "R" }, { col: 11, row: 2, color: "R" }]);
+var AT_CORE = h.atCore(h.FAR_BRICKS);
 
 /* No bricks, and the ball flying sideways far below the core. */
 function adrift(core) {
