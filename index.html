@@ -4,14 +4,74 @@
 <meta charset="UTF-8">
 <title>Breakout</title>
 <link rel="stylesheet" href="css/app.css">
+<link rel="stylesheet" href="css/play.css">
+<link rel="stylesheet" href="css/dialogs.css">
 </head>
 <body>
 <div id="app">
   <section id="screen-title" class="screen">
     <h1 id="title-name">Breakout</h1>
+    <p id="title-start">Press Enter or OK to start</p>
+    <p id="title-best">Best score: &mdash;</p>
+    <p class="control first">Move: &larr; &rarr; or A D</p>
+    <p class="control">Launch: Space, Enter or OK</p>
+    <p class="control">Pause: P or Back</p>
   </section>
+
+  <section id="screen-play" class="screen" hidden>
+    <div id="hud">
+      <span id="hud-score">Score 0</span>
+      <span id="hud-sound" hidden>Sound off</span>
+      <span id="hud-level">Level 1</span>
+      <span id="hud-lives">Lives</span>
+    </div>
+    <canvas id="playfield" width="1600" height="880"></canvas>
+    <p id="play-hint">Press Space or OK to launch</p>
+    <p id="play-banner" hidden>Level 2</p>
+  </section>
+
+  <section id="screen-over" class="screen" hidden>
+    <h1 id="over-heading">Game over</h1>
+    <p id="over-score">Score 0</p>
+    <p id="over-best">Best score 0</p>
+    <p id="over-new-best" hidden>New best!</p>
+    <div class="choices">
+      <span id="over-again" class="choice focused">Play again</span>
+      <span id="over-title" class="choice">Title</span>
+    </div>
+  </section>
+
+  <div id="dialog-pause" class="dialog" hidden>
+    <h2>Paused</h2>
+    <div class="choices stacked">
+      <span id="pause-resume" class="choice focused">Resume</span>
+      <span id="pause-quit" class="choice">Quit to title</span>
+    </div>
+  </div>
+
+  <div id="dialog-leave" class="dialog" hidden>
+    <h2>Leave Breakout?</h2>
+    <div class="choices">
+      <span id="leave-stay" class="choice focused">Stay</span>
+      <span id="leave-leave" class="choice">Leave</span>
+    </div>
+  </div>
 </div>
 <div id="build-stamp">dev</div>
 <script src="js/app.js"></script>
+<script src="js/score.js"></script>
+<script src="js/levels.js"></script>
+<script src="js/physics.js"></script>
+<script src="js/hold.js"></script>
+<script src="js/store.js"></script>
+<script src="js/keys.js"></script>
+<script src="js/sound.js"></script>
+<script src="js/render.js"></script>
+<script src="js/screens.js"></script>
+<script src="js/session.js"></script>
+<script src="js/hud.js"></script>
+<script src="js/game.js"></script>
+<script src="js/controls.js"></script>
+<script src="js/main.js"></script>
 </body>
 </html>

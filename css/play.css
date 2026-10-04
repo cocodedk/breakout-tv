@@ -1,0 +1,37 @@
+/* Breakout: the play screen, a row of status text above the playfield canvas. */
+#hud {
+  position: absolute;
+  left: 160px;
+  top: 56px;
+  width: 1600px;
+  height: 48px;
+  font-size: 40px;
+  line-height: 48px;
+}
+
+#hud span { position: absolute; top: 0; white-space: nowrap; }
+#hud-score { left: 0; }
+#hud-sound { left: 360px; font-size: 28px; }
+#hud-level { left: 600px; width: 400px; text-align: center; }
+#hud-lives { right: 0; }
+
+#playfield {
+  position: absolute;
+  left: 160px;
+  top: 152px;
+  width: 1600px;
+  height: 880px;
+  border: 2px solid #1f2a55;
+  background: #070b1e;
+}
+
+#play-hint, #play-banner {
+  position: absolute;
+  left: 162px;
+  width: 1600px;
+  margin: 0;
+  text-align: center;
+}
+
+#play-hint { top: 454px; font-size: 36px; }
+#play-banner { top: 520px; font-size: 96px; font-weight: bold; color: #ffd447; }

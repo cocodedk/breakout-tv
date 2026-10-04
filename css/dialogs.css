@@ -1,0 +1,19 @@
+/* Breakout: the pause and leave dialogs, which sit over a screen. */
+.dialog {
+  position: absolute;
+  left: 560px;
+  top: 300px;
+  width: 800px;
+  box-sizing: border-box;
+  padding: 48px;
+  background: #0f1736;
+  border: 4px solid #5aa9ff;
+  border-radius: 16px;
+  text-align: center;
+  z-index: 10;
+}
+
+.dialog h2 { margin: 0; font-size: 72px; }
+.dialog .choices { margin: 40px 0 0; }
+.choices.stacked { flex-direction: column; align-items: center; }
+.stacked .choice { margin: 16px 0; }

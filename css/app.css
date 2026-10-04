@@ -1,4 +1,4 @@
-/* Breakout: the fixed 1920x1080 stage. */
+/* Breakout: the fixed 1920x1080 stage, the title screen and the game over screen. */
 html, body {
   margin: 0;
   width: 1920px;
@@ -15,13 +15,42 @@ html, body {
 
 .screen { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
 
+.screen p, .screen h1 { margin: 0 160px; text-align: center; }
+
 #title-name {
-  margin: 0;
   padding-top: 380px;
-  text-align: center;
   font-size: 160px;
   letter-spacing: 12px;
 }
+
+#title-start { margin-top: 24px; font-size: 48px; color: #ffd447; }
+#title-best { margin-top: 24px; font-size: 36px; }
+.screen .control { margin-top: 12px; font-size: 32px; }
+.screen .control.first { margin-top: 40px; }
+
+#over-heading { padding-top: 200px; font-size: 120px; }
+#over-score { margin-top: 32px; font-size: 64px; }
+#over-best { margin-top: 24px; font-size: 40px; }
+#over-new-best { margin-top: 16px; font-size: 40px; color: #ffd447; }
+
+.choices {
+  display: flex;
+  justify-content: center;
+  margin: 64px 160px 0;
+}
+
+.choice {
+  display: block;
+  margin: 0 24px;
+  padding: 12px 40px;
+  border: 4px solid #3a4677;
+  border-radius: 8px;
+  font-size: 48px;
+  text-align: center;
+  color: #ffffff;
+}
+
+.choice.focused { border-color: #ffd447; color: #ffd447; }
 
 #build-stamp {
   position: absolute;
