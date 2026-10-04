@@ -5,8 +5,10 @@
 Today a level ends when the last brick falls. This changes the goal: a gold core slides left and
 right behind the wall, above the bricks. The player tunnels through the wall, and when the ball
 touches the core, the rest of the wall dissolves and the player goes on to the next level. The
-bricks get half as tall and each level twice as many rows, so the wall is as deep as before but
-made of thin layers that the ball cuts through.
+bricks get half as tall and each level twice as many rows, so the wall is made of thin layers that
+the ball cuts through. With the row spacing below the walls get somewhat deeper than before (level
+1: 272px instead of 232px; levels 2 and 3: 328px instead of 280px); the numbers in The wall are what
+counts.
 
 This builds on spec 01 (`docs/lean/01-breakout.md`) and the code it produced. Everything in spec
 01 still holds unless this spec says otherwise.
