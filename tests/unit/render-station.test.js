@@ -48,27 +48,39 @@ function draw(s) {
 
 var FULL = [800, 140, 100, 0, 2 * Math.PI];
 
-test("the station is a hull, a darker lower half, a trench and three panel lines inside one clip, then the dish", function () {
+function disc(x, y, r) { return [[x, y, r, 0, 2 * Math.PI]]; }
+
+test("the station is a rimmed hull, then shading, trench, lines and panels inside one clip, then the dish", function () {
   var ops = draw(level4(false));
-  assert.deepStrictEqual(ops.slice(0, 11), [
-    ["fill", "#8a93a6", [FULL], []],
+  assert.deepStrictEqual(ops.slice(0, 12), [
+    ["fill", "#c9d0dd", [FULL], []],
+    ["fill", "#8a93a6", disc(802, 142, 98), []],
     ["save"],
     ["clip", [FULL]],
-    ["fill", "rgba(0, 0, 0, 0.18)", [[800, 140, 100, 0, Math.PI]], []],
+    ["fill", "rgba(0, 0, 0, 0.11)", disc(830, 170, 100), []],
+    ["fill", "rgba(0, 0, 0, 0.11)", disc(855, 195, 100), []],
+    ["fill", "rgba(0, 0, 0, 0.11)", disc(880, 220, 100), []],
     ["rect", "#3b4152", [700, 135, 200, 10]],
+    ["rect", "rgba(255, 255, 255, 0.16)", [700, 145, 200, 2]],
     ["rect", "#5b6378", [700, 94, 200, 2]],
     ["rect", "#5b6378", [700, 184, 200, 2]],
-    ["rect", "#5b6378", [700, 214, 200, 2]],
+    ["rect", "#5b6378", [700, 214, 200, 2]]
+  ]);
+  var panels = ops.slice(12, 26);
+  assert.ok(panels.every(function (o) { return o[0] === "rect" && /^#(7a8397|9ca5b7)$/.test(o[1]); }), "14 panels");
+  assert.deepStrictEqual(ops.slice(26, 31), [
     ["restore"],
-    ["fill", "#5b6378", [[840, 100, 26, 0, 2 * Math.PI]], []],
-    ["fill", "#6f788c", [[840, 100, 14, 0, 2 * Math.PI]], []]
+    ["fill", "#5b6378", disc(840, 100, 26), []],
+    ["fill", "#454c5e", disc(840, 100, 17), []],
+    ["fill", "#6f788c", disc(842, 102, 15), []],
+    ["fill", "#3b4152", disc(840, 100, 3), []]
   ]);
   assert.strictEqual(ops.filter(function (o) { return o[0] === "clip"; }).length, 1, "one clip only");
 });
 
 test("the green dot shows in the dish only while charging", function () {
-  var dot = ["fill", "#4be38e", [[840, 100, 6, 0, 2 * Math.PI]], []];
-  assert.deepStrictEqual(draw(level4(true))[11], dot);
+  var dot = ["fill", "#4be38e", disc(840, 100, 6), []];
+  assert.deepStrictEqual(draw(level4(true))[32], dot);
   assert.ok(!draw(level4(false)).some(function (o) { return o[1] === "#4be38e"; }), "not in Serve");
   var s = level4(true);
   s.fireIn = 0.6;
