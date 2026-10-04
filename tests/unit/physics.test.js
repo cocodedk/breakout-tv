@@ -3,19 +3,9 @@ var test = require("node:test");
 var assert = require("node:assert");
 var physics = require("../../js/physics.js");
 var levels = require("../../js/levels.js");
+var flying = require("./physics-helpers.js").flying;
 
 var DT = 1 / 240;
-
-/* A state with the ball flying from (x, y) at (vx, vy) over the given bricks. */
-function flying(x, y, vx, vy, bricks) {
-  var s = physics.newState(bricks || []);
-  s.serving = false;
-  s.ball.x = x;
-  s.ball.y = y;
-  s.ball.vx = vx;
-  s.ball.vy = vy;
-  return s;
-}
 
 function degrees(ball) {
   return Math.atan2(ball.vx, -ball.vy) * 180 / Math.PI;
@@ -119,7 +109,7 @@ test("a brick hit removes the brick, reflects the ball and scores its points", f
 
 test("a ball hitting a brick's side reflects sideways", function () {
   var bricks = [levels.brick(1, 0, "O"), levels.brick(5, 0, "B")];
-  var s = flying(164 - 12 - 1, 116, 720, 0, bricks);
+  var s = flying(164 - 12 - 1, 130, 720, 0, bricks);
   assert.deepStrictEqual(physics.step(s, DT, 0), ["brick"]);
   assert.ok(s.ball.vx < 0);
   assert.strictEqual(s.ball.vy, 0);
@@ -164,9 +154,9 @@ test("a ball at 1200 px/s aimed at a brick never passes through it", function ()
   });
 });
 
-test("the last brick gives cleared", function () {
+test("breaking the last brick gives no level-ending event", function () {
   var s = flying(96, 150, 0, -720, [levels.brick(0, 0, "G")]);
-  assert.deepStrictEqual(physics.step(s, DT, 0), ["brick", "cleared"]);
+  assert.deepStrictEqual(physics.step(s, DT, 0), ["brick"]);
   assert.strictEqual(s.bricks.length, 0);
 });
 

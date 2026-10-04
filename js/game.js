@@ -1,18 +1,20 @@
-/* Breakout game: the animation loop and what happens when the ball is lost or a wall is cleared.
-   The loop runs only while Play shows with no dialog over it. State lives in session.js. */
+/* Breakout game: the animation loop and what happens when the ball is lost. The dissolve and the
+   banner are in phases.js. The loop runs only while Play shows with no dialog over it. State lives
+   in session.js. */
 (function (BO) {
   "use strict";
   var physics = BO.physics;
   var score = BO.score;
   var levels = BO.levels;
+  var core = BO.core;
   var screens = BO.screens;
   var sound = BO.sound;
   var store = BO.store;
+  var phases = BO.phases;
   var g = BO.session;
 
   var STEP = 1 / 240;
   var MAX_FRAME = 0.05;
-  var BANNER_MS = 1500;
   var BEST_KEY = "breakout.best";
 
   var refresh = BO.hud.refresh;
@@ -41,6 +43,7 @@
   function loadLevel() {
     g.s.bricks = levels.build(g.level);
     g.s.broken = 0;
+    g.s.core = core.create();
     g.speed = score.speed(g.loop, 0);
     physics.serve(g.s);
     setState("serve");
@@ -73,6 +76,7 @@
     sound.play("over", 0.4);
   }
 
+  /* A lost ball costs a life: the next serve, or the end of the game. */
   function lose() {
     g.lives -= 1;
     sound.play("lost");
@@ -84,20 +88,6 @@
     }
   }
 
-  /* After the last brick: the next level, repeating faster after level 3, behind a banner. */
-  function clear() {
-    sound.play("cleared", 0.05);
-    if (g.level === levels.COUNT) {
-      g.level = 1;
-      g.loop += 1;
-    } else {
-      g.level += 1;
-    }
-    g.bannerLeft = BANNER_MS;
-    screens.text("play-banner", "Level " + g.level);
-    setState("banner");
-  }
-
   /* Reacts to one step's events. Returns true when the step loop must stop. */
   function react(events) {
     if (events.indexOf("lost") >= 0) { lose(); return true; }
@@ -105,9 +95,9 @@
       g.speed = score.speed(g.loop, g.s.broken);
       physics.setSpeed(g.s.ball, g.speed);
     }
-    var tone = ["brick", "paddle", "wall"].filter(function (e) { return events.indexOf(e) >= 0; })[0];
+    var tone = ["core", "brick", "paddle", "wall"].filter(function (e) { return events.indexOf(e) >= 0; })[0];
     if (tone) { sound.play(tone); }
-    if (events.indexOf("cleared") >= 0) { clear(); return true; }
+    if (events.indexOf("core") >= 0) { phases.dissolve(); return true; }
     return false;
   }
 
@@ -126,9 +116,8 @@
   function advance(t) {
     var dt = Math.min(Math.max(t - last, 0) / 1000, MAX_FRAME);
     last = t;
-    if (g.state === "banner") {
-      g.bannerLeft -= dt * 1000;
-      if (g.bannerLeft <= 0) { loadLevel(); }
+    if (phases.timed()) {
+      phases.tick(dt * 1000);
     } else if (dt > 0) {
       simulate(t, dt);
     }
@@ -144,7 +133,7 @@
 
   /* A key change takes effect at its own moment, not at the next frame. */
   function holdDown(code, dir) {
-    if (!running() || g.state === "banner") { return; }
+    if (!running() || phases.timed()) { return; }
     var t = now();
     advance(t);
     hold.down(code, dir, t);
@@ -173,11 +162,12 @@
   /* Focus lost or page hidden: every held key is released, and a game in Serve or Moving pauses. */
   function onHidden() {
     hold.release();
-    if (g.state !== "banner") { pause(); }
+    if (!phases.timed()) { pause(); }
   }
 
   function init() {
     BO.hud.init();
+    phases.init(loadLevel);
     toTitle();
   }
 

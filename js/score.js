@@ -1,10 +1,12 @@
-/* Breakout scoring: points per brick colour, the speed rule and the best score. No DOM. */
+/* Breakout scoring: points per brick colour and for the core, the speed rule and the best score.
+   No DOM. */
 (function (BO) {
   "use strict";
   var POINTS = { R: 50, O: 40, Y: 30, G: 20, B: 10, S: 100 };
+  var CORE_POINTS = 500;
   var BASE_SPEED = 720;
   var LOOP_RISE = 1.1;
-  var BRICKS_PER_RISE = 10;
+  var BRICKS_PER_RISE = 20;
   var BRICK_RISE = 1.05;
   var MAX_SPEED = 1200;
 
@@ -17,7 +19,7 @@
     return BASE_SPEED * Math.pow(LOOP_RISE, loop);
   }
 
-  /* The current speed: the start speed, up 5% for every 10 bricks broken in this level. */
+  /* The current speed: the start speed, up 5% for every 20 bricks broken in this level. */
   function speed(loop, broken) {
     var rises = Math.floor(broken / BRICKS_PER_RISE);
     return Math.min(MAX_SPEED, startSpeed(loop) * Math.pow(BRICK_RISE, rises));
@@ -36,6 +38,7 @@
 
   BO.score = {
     POINTS: POINTS,
+    CORE_POINTS: CORE_POINTS,
     MAX_SPEED: MAX_SPEED,
     points: points,
     startSpeed: startSpeed,

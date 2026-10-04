@@ -20,18 +20,22 @@ test("the start speed is 720 px/s, up 10% for every loop", function () {
   near(score.startSpeed(2), 871.2);
 });
 
-test("the speed rises 5% for every 10 bricks broken, compounded", function () {
+test("the core is worth 500 points", function () {
+  assert.strictEqual(score.CORE_POINTS, 500);
+});
+
+test("the speed rises 5% for every 20 bricks broken, compounded", function () {
   near(score.speed(0, 0), 720);
-  near(score.speed(0, 9), 720);
-  near(score.speed(0, 10), 756);
-  near(score.speed(0, 25), 720 * 1.05 * 1.05);
-  near(score.speed(1, 10), 792 * 1.05);
+  near(score.speed(0, 19), 720);
+  near(score.speed(0, 20), 756);
+  near(score.speed(0, 50), 720 * 1.05 * 1.05);
+  near(score.speed(1, 20), 792 * 1.05);
 });
 
 test("the speed never goes above 1200 px/s", function () {
-  assert.strictEqual(score.speed(0, 1000), 1200);
+  assert.strictEqual(score.speed(0, 2000), 1200);
   assert.strictEqual(score.speed(8, 0), 1200);
-  assert.ok(score.speed(0, 150) <= 1200);
+  assert.ok(score.speed(0, 300) <= 1200);
 });
 
 test("the best score is read from stored text, 0 when there is none", function () {

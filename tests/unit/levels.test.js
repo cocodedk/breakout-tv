@@ -7,48 +7,59 @@ function at(bricks, x, y) {
   return bricks.filter(function (b) { return b.x === x && b.y === y; })[0];
 }
 
-test("the three levels have 60, 36 and 42 bricks", function () {
+/* The y of layout row n: the top row is at 120 and rows are 28px apart. */
+function row(n) { return 120 + n * 28; }
+
+test("the three levels have 120, 72 and 84 bricks in 10, 12 and 12 rows", function () {
   assert.strictEqual(levels.COUNT, 3);
-  assert.deepStrictEqual([1, 2, 3].map(function (n) { return levels.build(n).length; }), [60, 36, 42]);
+  assert.deepStrictEqual([1, 2, 3].map(function (n) { return levels.build(n).length; }), [120, 72, 84]);
+  assert.deepStrictEqual(levels.LAYOUTS.map(function (rows) { return rows.length; }), [10, 12, 12]);
 });
 
 test("every layout row is 12 characters", function () {
   levels.LAYOUTS.forEach(function (rows) {
-    rows.forEach(function (row) { assert.strictEqual(row.length, 12); });
+    rows.forEach(function (line) { assert.strictEqual(line.length, 12); });
   });
 });
 
-test("level 1 is five full rows from x 36, y 96 with 128px columns and 48px rows", function () {
+test("each layout line appears twice, one under the other", function () {
+  levels.LAYOUTS.forEach(function (rows) {
+    for (var i = 0; i < rows.length; i += 2) { assert.strictEqual(rows[i], rows[i + 1]); }
+  });
+});
+
+test("level 1 is ten rows from x 36, y 120 with 120x20 bricks, 128px columns and 28px rows", function () {
   var bricks = levels.build(1);
-  assert.strictEqual(at(bricks, 36, 96).color, "R");
-  assert.strictEqual(at(bricks, 36 + 11 * 128, 96).color, "R");
-  assert.strictEqual(at(bricks, 36, 96 + 48).color, "O");
-  assert.strictEqual(at(bricks, 36, 96 + 96).color, "Y");
-  assert.strictEqual(at(bricks, 36, 96 + 144).color, "G");
-  assert.strictEqual(at(bricks, 36, 96 + 192).color, "B");
-  assert.strictEqual(at(bricks, 36, 96).w, 120);
-  assert.strictEqual(at(bricks, 36, 96).h, 40);
+  assert.strictEqual(at(bricks, 36, row(0)).color, "R");
+  assert.strictEqual(at(bricks, 36 + 11 * 128, row(1)).color, "R");
+  assert.strictEqual(at(bricks, 36, row(2)).color, "O");
+  assert.strictEqual(at(bricks, 36, row(4)).color, "Y");
+  assert.strictEqual(at(bricks, 36, row(6)).color, "G");
+  assert.strictEqual(at(bricks, 36, row(9)).color, "B");
+  assert.strictEqual(at(bricks, 36, row(0)).w, 120);
+  assert.strictEqual(at(bricks, 36, row(0)).h, 20);
 });
 
 test("level 2 alternates its columns", function () {
   var bricks = levels.build(2);
-  assert.ok(at(bricks, 36, 96), "row 0 starts with a brick");
-  assert.ok(!at(bricks, 36 + 128, 96), "row 0 skips column 1");
-  assert.strictEqual(at(bricks, 36 + 128, 96 + 48).color, "O");
-  assert.strictEqual(at(bricks, 36 + 11 * 128, 96 + 5 * 48).color, "B");
-  assert.ok(!at(bricks, 36, 96 + 5 * 48), "row 5 starts empty");
+  assert.ok(at(bricks, 36, row(0)), "row 0 starts with a brick");
+  assert.ok(!at(bricks, 36 + 128, row(0)), "row 0 skips column 1");
+  assert.strictEqual(at(bricks, 36 + 128, row(2)).color, "O");
+  assert.strictEqual(at(bricks, 36 + 11 * 128, row(11)).color, "B");
+  assert.ok(!at(bricks, 36, row(10)), "row 10 starts empty");
 });
 
-test("level 3 has a silver top row of two-hit bricks and a blue tip", function () {
+test("level 3 has 24 silver two-hit bricks on top and a blue tip", function () {
   var bricks = levels.build(3);
-  var top = bricks.filter(function (b) { return b.y === 96; });
-  assert.strictEqual(top.length, 12);
+  var top = bricks.filter(function (b) { return b.y === row(0) || b.y === row(1); });
+  assert.strictEqual(top.length, 24);
   top.forEach(function (b) {
     assert.strictEqual(b.color, "S");
     assert.strictEqual(b.hits, 2);
     assert.strictEqual(b.points, 100);
   });
-  var tip = bricks.filter(function (b) { return b.y === 96 + 5 * 48; });
+  assert.strictEqual(bricks.filter(function (b) { return b.color === "S"; }).length, 24);
+  var tip = bricks.filter(function (b) { return b.y === row(11); });
   assert.deepStrictEqual(tip.map(function (b) { return b.x; }), [36 + 5 * 128, 36 + 6 * 128]);
 });
 

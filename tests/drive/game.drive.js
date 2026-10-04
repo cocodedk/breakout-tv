@@ -4,10 +4,7 @@ var assert = require("node:assert");
 var runDrive = require("./drive-runner.js").runDrive;
 var h = require("./drive-helpers.js");
 var K = h.KEY;
-
-function near(actual, expected, tolerance, what) {
-  assert.ok(Math.abs(actual - expected) <= tolerance, what + ": " + actual + " should be " + expected + " +-" + tolerance);
-}
+var near = h.near;
 
 async function paddle(page) { return (await h.snap(page)).paddleX; }
 
@@ -59,7 +56,8 @@ runDrive(async function (browser, url) {
     return nodes.map(function (n) { return n.textContent; });
   });
   assert.deepStrictEqual(controls, [
-    "Move: ← → or A D", "Launch: Space, Enter or OK", "Pause: P or Back"
+    "Move: ← → or A D", "Launch: Space, Enter or OK", "Pause: P or Back",
+    "Goal: break through and hit the gold core"
   ]);
 
   await h.startGame(page);

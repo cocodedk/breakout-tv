@@ -1,4 +1,4 @@
-/* Breakout physics: one fixed step of the paddle, the ball, the walls and the bricks. No DOM.
+/* Breakout physics: one fixed step of the paddle, the core, the ball, the walls and the bricks. No DOM.
    Positions are in playfield pixels, time in seconds. */
 (function (BO) {
   "use strict";
@@ -11,6 +11,8 @@
   var R = 12;
   var LAUNCH_ANGLE = Math.PI / 6;
   var MAX_BOUNCE_ANGLE = Math.PI / 3;
+  var score = BO.score || require("./score.js");
+  var core = BO.core || require("./core.js");
 
   function clamp(v, lo, hi) {
     return Math.max(lo, Math.min(hi, v));
@@ -31,9 +33,17 @@
   }
 
   function newState(bricks) {
-    var s = { paddleX: 0, ball: { x: 0, y: 0, vx: 0, vy: 0 }, bricks: bricks, score: 0, broken: 0, serving: true };
+    var s = { paddleX: 0, ball: { x: 0, y: 0, vx: 0, vy: 0 }, bricks: bricks, score: 0, broken: 0, serving: true,
+      core: core.create() };
     serve(s);
     return s;
+  }
+
+  /* Hitting the core scores, and the ball is not reflected: it flies on until the game hides it. */
+  function hitCore(s, events) {
+    if (!core.touches(s.core, s.ball.x, s.ball.y, R)) { return; }
+    s.score += score.CORE_POINTS;
+    events.push("core");
   }
 
   /* Sends the ball 30 degrees to the right of straight up. */
@@ -120,15 +130,15 @@
     s.bricks.splice(i, 1);
     s.score += b.points;
     s.broken += 1;
-    if (s.bricks.length === 0) { events.push("cleared"); }
   }
 
-  /* Moves the paddle (dir is -1, 0 or 1) and the ball by dt seconds. Returns the events, in
-     order: "wall", "paddle", "brick", "cleared", "lost". */
+  /* Moves the paddle (dir is -1, 0 or 1), the core and the ball by dt seconds. Returns the events,
+     in order: "wall", "paddle", "brick", "core", "lost". */
   function step(s, dt, dir) {
     var events = [];
     var ball = s.ball;
     s.paddleX = clamp(s.paddleX + dir * PADDLE_SPEED * dt, 0, W - PADDLE_W);
+    core.move(s.core, dt);
     if (s.serving) {
       follow(s);
       return events;
@@ -139,6 +149,7 @@
     if (bounceWalls(ball)) { events.push("wall"); }
     if (bouncePaddle(s, prevBottom)) { events.push("paddle"); }
     hitBrick(s, events);
+    hitCore(s, events);
     if (ball.y - R > H) { events.push("lost"); }
     return events;
   }

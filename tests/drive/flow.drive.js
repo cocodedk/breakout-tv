@@ -1,4 +1,4 @@
-/* Breakout drive: losing the ball, game over, clearing a level, and leaving from the title. */
+/* Breakout drive: losing the ball, game over, hitting the core, and leaving from the title. */
 "use strict";
 var assert = require("node:assert");
 var runDrive = require("./drive-runner.js").runDrive;
@@ -10,6 +10,9 @@ async function loseBall(page) {
   await h.seed(page, { ball: { x: 100, y: 600, vx: 0, vy: 720 } });
   await page.clock.runFor(1000);
 }
+
+/* Two bricks far from the ball, which flies straight up into the core as it slides into its path. */
+var CORE_HIT = h.atCore(h.FAR_BRICKS);
 
 runDrive(async function (browser, url) {
   var context = await browser.newContext({ viewport: { width: 1920, height: 1080 } });
@@ -72,15 +75,12 @@ runDrive(async function (browser, url) {
   snap = await h.snap(page);
   assert.deepStrictEqual([snap.screen, snap.state, snap.score, snap.lives], ["play", "serve", 0, 3], "Play again");
 
-  // One brick left: breaking it shows the level banner, then the level 2 wall in Serve.
-  await h.seed(page, {
-    bricks: [{ col: 5, row: 0, color: "R" }],
-    ball: { x: 736, y: 300, vx: 0, vy: -720 }
-  });
-  await page.clock.runFor(400);
+  // Hitting the core dissolves the wall, shows the level banner, then the level 2 wall in Serve.
+  await h.seed(page, CORE_HIT);
+  await page.clock.runFor(1200);
   snap = await h.snap(page);
   assert.strictEqual(snap.state, "banner");
-  assert.strictEqual(snap.score, 50);
+  assert.strictEqual(snap.score, 500);
   assert.strictEqual(snap.bricksLeft, 0);
   assert.ok(await page.isVisible("#play-banner"));
   assert.strictEqual(await h.text(page, "#play-banner"), "Level 2");
@@ -91,7 +91,7 @@ runDrive(async function (browser, url) {
   assert.strictEqual((await h.snap(page)).state, "banner", "the banner lasts 1.5 s");
   await page.clock.runFor(500);
   snap = await h.snap(page);
-  assert.deepStrictEqual([snap.state, snap.level, snap.bricksLeft], ["serve", 2, 36]);
+  assert.deepStrictEqual([snap.state, snap.level, snap.bricksLeft], ["serve", 2, 72]);
   await page.clock.runFor(200);
   assert.strictEqual((await h.snap(page)).paddleX, 680, "a direction pressed in the banner moves nothing");
   await h.up(page, K.LEFT);
@@ -99,11 +99,10 @@ runDrive(async function (browser, url) {
   assert.strictEqual(await h.text(page, "#hud-level"), "Level 2");
 
   // After level 3, level 1 comes back with the loop count up.
-  await h.seed(page, { level: 3, bricks: [{ col: 5, row: 0, color: "R" }],
-    ball: { x: 736, y: 300, vx: 0, vy: -720 } });
-  await page.clock.runFor(2200);
+  await h.seed(page, Object.assign({ level: 3 }, CORE_HIT));
+  await page.clock.runFor(2800);
   snap = await h.snap(page);
-  assert.deepStrictEqual([snap.state, snap.level, snap.loop, snap.bricksLeft], ["serve", 1, 1, 60]);
+  assert.deepStrictEqual([snap.state, snap.level, snap.loop, snap.bricksLeft], ["serve", 1, 1, 120]);
   await h.tap(page, K.SPACE);
   await page.clock.runFor(16);
   var v = (await h.snap(page)).ball;

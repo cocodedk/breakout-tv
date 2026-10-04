@@ -3,29 +3,47 @@
   "use strict";
   var score = BO.score || require("./score.js");
 
-  /* R O Y G B are the colours, S is a silver two-hit brick, . is empty. */
+  /* R O Y G B are the colours, S is a silver two-hit brick, . is empty. The bricks are thin, so
+     every line is written twice: each layer of the wall is two rows. */
   var LAYOUTS = [
     [
       "RRRRRRRRRRRR",
+      "RRRRRRRRRRRR",
+      "OOOOOOOOOOOO",
       "OOOOOOOOOOOO",
       "YYYYYYYYYYYY",
+      "YYYYYYYYYYYY",
       "GGGGGGGGGGGG",
+      "GGGGGGGGGGGG",
+      "BBBBBBBBBBBB",
       "BBBBBBBBBBBB"
     ],
     [
       "R.R.R.R.R.R.",
+      "R.R.R.R.R.R.",
+      ".O.O.O.O.O.O",
       ".O.O.O.O.O.O",
       "Y.Y.Y.Y.Y.Y.",
+      "Y.Y.Y.Y.Y.Y.",
+      ".G.G.G.G.G.G",
       ".G.G.G.G.G.G",
       "B.B.B.B.B.B.",
+      "B.B.B.B.B.B.",
+      ".B.B.B.B.B.B",
       ".B.B.B.B.B.B"
     ],
     [
       "SSSSSSSSSSSS",
+      "SSSSSSSSSSSS",
+      ".RRRRRRRRRR.",
       ".RRRRRRRRRR.",
       "..OOOOOOOO..",
+      "..OOOOOOOO..",
+      "...YYYYYY...",
       "...YYYYYY...",
       "....GGGG....",
+      "....GGGG....",
+      ".....BB.....",
       ".....BB....."
     ]
   ];
@@ -40,11 +58,11 @@
   };
 
   var BRICK_W = 120;
-  var BRICK_H = 40;
+  var BRICK_H = 20;
   var COL_STEP = 128;
-  var ROW_STEP = 48;
+  var ROW_STEP = 28;
   var LEFT = 36;
-  var TOP = 96;
+  var TOP = 120;
 
   function brick(col, row, color) {
     return {

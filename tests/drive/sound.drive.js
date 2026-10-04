@@ -10,7 +10,14 @@ var K = h.KEY;
 function installShim() {
   window.__tones = 0;
   window.__stops = [];
-  function param() { return { setValueAtTime: function () {}, linearRampToValueAtTime: function () {} }; }
+  window.__notes = [];
+  /* Records every call made on the parameter, as [name, value, time]. */
+  function param() {
+    var p = { calls: [] };
+    p.setValueAtTime = function (v, t) { p.calls.push(["set", v, t]); };
+    p.linearRampToValueAtTime = function (v, t) { p.calls.push(["ramp", v, t]); };
+    return p;
+  }
   function FakeAudioContext() {
     this.currentTime = 0;
     this.state = "running";
@@ -21,12 +28,20 @@ function installShim() {
     return { gain: param(), connect: function () {} };
   };
   FakeAudioContext.prototype.createOscillator = function () {
-    return {
+    var osc = {
       frequency: param(),
-      connect: function () {},
-      start: function () { window.__tones += 1; },
-      stop: function (t) { window.__stops.push(t); }
+      connect: function (node) { osc.node = node; },
+      start: function (t) {
+        window.__tones += 1;
+        osc.note = { type: osc.type, start: t, freq: osc.frequency.calls, gain: osc.node.gain.calls };
+        window.__notes.push(osc.note);
+      },
+      stop: function (t) {
+        window.__stops.push(t);
+        if (osc.note && t > 0) { osc.note.end = t; }
+      }
     };
+    return osc;
   };
   window.AudioContext = FakeAudioContext;
 }
@@ -58,6 +73,17 @@ async function playThree(page) {
   return counts;
 }
 
+/* Hits the core and returns the tones started in the 100 ms after; then waits out the dissolve and
+   the level banner. */
+async function coreHit(page) {
+  var before = await tones(page);
+  await h.seed(page, h.atCore());
+  await page.clock.runFor(100);
+  var started = (await tones(page)) - before;
+  await page.clock.runFor(2700);
+  return started;
+}
+
 runDrive(async function (browser, url) {
   var context = await browser.newContext({ viewport: { width: 1920, height: 1080 } });
   await context.addInitScript(installShim);
@@ -66,11 +92,21 @@ runDrive(async function (browser, url) {
   await h.startGame(page);
   assert.ok(!(await page.isVisible("#hud-sound")), "sound is on at first");
   assert.deepStrictEqual(await playThree(page), [1, 1, 1], "each event starts one tone");
+  await page.evaluate(function () { window.__notes.length = 0; });
+  assert.strictEqual(await coreHit(page), 1, "a core hit starts the core tone once");
+  var notes = await page.evaluate(function () { return window.__notes; });
+  var core = notes[0];
+  assert.strictEqual(core.type, "sine");
+  assert.deepStrictEqual(core.freq, [["set", 300, 0], ["ramp", 1200, 0.5]], "a sweep from 300 to 1200 Hz over 500 ms");
+  assert.strictEqual(core.end, 0.5);
+  assert.deepStrictEqual(core.gain, [["set", 0, 0], ["ramp", 0.2, 0.005], ["set", 0.2, 0.495], ["ramp", 0, 0.5]],
+    "peak gain 0.2 with 5 ms attack and release");
 
   await h.tap(page, K.M);
   assert.ok(await page.isVisible("#hud-sound"));
   assert.strictEqual(await h.text(page, "#hud-sound"), "Sound off");
   assert.deepStrictEqual(await playThree(page), [0, 0, 0], "no tones once sound is off");
+  assert.strictEqual(await coreHit(page), 0, "a core hit starts nothing once sound is off");
   assert.deepStrictEqual(page.errors, []);
   await page.close();
 
@@ -93,9 +129,11 @@ runDrive(async function (browser, url) {
   assert.strictEqual((await tones(third)) - before, 1, "a wall hit starts one tone");
 
   before = await tones(third);
-  await h.seed(third, { bricks: [{ col: 5, row: 0, color: "R" }], ball: { x: 736, y: 300, vx: 0, vy: -720 } });
+  await h.seed(third, h.atCore());
   await third.clock.runFor(400);
-  assert.strictEqual((await tones(third)) - before, 4, "the last brick sounds the hit and three rising notes");
+  assert.strictEqual((await tones(third)) - before, 1, "the core hit starts one tone");
+  await third.clock.runFor(700);
+  assert.strictEqual((await tones(third)) - before, 4, "the end of the dissolve sounds three rising notes");
   await h.tap(third, K.M);
   var cancelled = await third.evaluate(function () {
     return window.__stops.filter(function (t) { return t === 0; }).length;
