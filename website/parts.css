@@ -25,7 +25,9 @@ pre { margin: 4px 0 0; padding: 16px 18px; border: 2px solid var(--edge); border
 .note { max-width: 40em; margin: 32px 0 0; padding-inline-start: 18px; border-inline-start: 4px solid var(--yellow); }
 
 @media (min-width: 768px) {
-  .pads { grid-template-columns: 1fr 1fr; align-items: start; }
   .steps li { grid-template-columns: 64px minmax(0, 1fr); gap: 0 24px; }
   .n { width: 64px; height: 40px; font-size: 1.625rem; }
+}
+@media (min-width: 1024px) {
+  .pads { grid-template-columns: 1fr 1fr; align-items: start; }
 }
