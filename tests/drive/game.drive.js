@@ -8,12 +8,13 @@ var near = h.near;
 
 async function paddle(page) { return (await h.snap(page)).paddleX; }
 
-/* Holds a key for 500 ms and checks the paddle moved by 600px, and stays put afterwards. */
+/* Holds a key for 250 ms and checks the paddle moved by about 410px (it speeds up from 900 px/s to
+   2400 px/s over that time), and stays put afterwards. */
 async function holdAndCheck(page, code, delta) {
   var before = await paddle(page);
-  await h.hold(page, code, 500);
+  await h.hold(page, code, 250);
   var after = await paddle(page);
-  near(after - before, delta, 5, "paddle move for key " + code);
+  near(after - before, delta, 10, "paddle move for key " + code);
   await page.clock.runFor(500);
   assert.strictEqual(await paddle(page), after, "the paddle stays put after keyup");
 }
@@ -26,14 +27,14 @@ runDrive(async function (browser, url) {
   await h.down(remote, K.ENTER);
   await remote.clock.runFor(50);
   await h.down(remote, K.RIGHT);
-  await remote.clock.runFor(300);
-  near((await paddle(remote)) - 680, 360, 24, "300 ms into a keydown with no keyup (up to a frame behind)");
+  await remote.clock.runFor(200);
+  near((await paddle(remote)) - 680, 280, 20, "200 ms into a keydown with no keyup (up to a frame behind)");
   await remote.clock.runFor(1000);
   var stopped = await paddle(remote);
   assert.strictEqual(stopped, 1360, "it moved to the right edge");
   await h.down(remote, K.LEFT);
   await remote.clock.runFor(1000);
-  near(await paddle(remote), 1360 - 720, 8, "a held direction ends 600 ms after its last keydown");
+  near(await paddle(remote), 1360 - 1249, 12, "a held direction ends 600 ms after its last keydown");
   var parked = await paddle(remote);
   await remote.clock.runFor(1000);
   assert.strictEqual(await paddle(remote), parked, "and it stays stopped");
@@ -74,10 +75,10 @@ runDrive(async function (browser, url) {
   assert.strictEqual(await h.text(page, "#hud-lives"), "Lives 10");
   assert.ok(await page.isVisible("#play-hint"), "the launch hint shows in Serve");
 
-  await holdAndCheck(page, K.RIGHT, 600);
-  await holdAndCheck(page, K.LEFT, -600);
-  await holdAndCheck(page, K.D, 600);
-  await holdAndCheck(page, K.A, -600);
+  await holdAndCheck(page, K.RIGHT, 410);
+  await holdAndCheck(page, K.LEFT, -410);
+  await holdAndCheck(page, K.D, 410);
+  await holdAndCheck(page, K.A, -410);
 
   await h.tap(page, K.SPACE);
   var before = await h.snap(page);

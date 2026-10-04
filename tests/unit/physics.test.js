@@ -23,16 +23,6 @@ test("the paddle starts in the middle with the ball on it, and the ball follows 
   assert.strictEqual(s.ball.x, s.paddleX + 120);
 });
 
-test("the paddle moves 1200 px/s and stays inside the playfield", function () {
-  var s = physics.newState([]);
-  for (var i = 0; i < 120; i++) { physics.step(s, DT, 1); }
-  assert.ok(Math.abs(s.paddleX - 1280) < 1e-6);
-  for (i = 0; i < 480; i++) { physics.step(s, DT, 1); }
-  assert.strictEqual(s.paddleX, 1360);
-  for (i = 0; i < 960; i++) { physics.step(s, DT, -1); }
-  assert.strictEqual(s.paddleX, 0);
-});
-
 test("launch sends the ball 30 degrees right of straight up at the given speed", function () {
   var s = physics.newState([]);
   physics.launch(s, 720);

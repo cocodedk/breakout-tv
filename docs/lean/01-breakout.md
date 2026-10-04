@@ -85,8 +85,9 @@ Key codes, read from `event.keyCode`:
 | Back | Back 10009, Escape 27, Backspace 8 |
 | Mute | M 77 |
 
-- **Holding.** A move key held moves the paddle at 1200 px/s until released. Keydown starts the
-  move; keyup of that key ends it. Repeated keydowns from auto-repeat change nothing. Both
+- **Holding.** A move key held moves the paddle until released, starting at 900 px/s and speeding
+  up by 6000 px/s every second to 2400 px/s (a quarter of a second); letting go or turning round
+  starts the climb again. Keydown starts the move; keyup of that key ends it. Repeated keydowns from auto-repeat change nothing. Both
   directions held: the one pressed last wins; releasing it goes back to the other if still held.
 - **A remote that sends no keyup.** Until the app has seen at least one keyup event, a held
   direction also ends 600 ms after that key's last keydown. Once any keyup has been seen, only
@@ -182,7 +183,7 @@ off at any time, saved in `localStorage` under `breakout.sound`; when it is off,
    synthetic keys with forced `keyCode`:
    - The title shows the name, the start line, "Best score: —" and the three control lines.
    - Enter starts a game: HUD "Score 0", "Level 1", three lives; the ball sits on the paddle.
-   - Holding Right (keydown, 500 ms, keyup) moves the paddle right by 600px ± 5px, and it stays put
+   - Holding Right (keydown, 250 ms, keyup) moves the paddle right by about 410px ± 10px, and it stays put
      after the keyup. The same with D, then Left and A move it back.
    - The same with only keydowns (no keyup ever sent) moves it, and it stops within 600 ms.
    - Space launches; 2 s later the ball has moved and the score or ball position has changed.

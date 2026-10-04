@@ -7,7 +7,9 @@
   var PADDLE_W = 240;
   var PADDLE_H = 24;
   var PADDLE_Y = 816;
-  var PADDLE_SPEED = 1200;
+  var PADDLE_START_SPEED = 900;
+  var PADDLE_MAX_SPEED = 2400;
+  var PADDLE_ACCEL = 6000;
   var R = 12;
   var LAUNCH_ANGLE = Math.PI / 6;
   var MAX_BOUNCE_ANGLE = Math.PI / 3;
@@ -33,8 +35,8 @@
   }
 
   function newState(bricks) {
-    var s = { paddleX: 0, ball: { x: 0, y: 0, vx: 0, vy: 0 }, bricks: bricks, score: 0, broken: 0, serving: true,
-      core: core.create() };
+    var s = { paddleX: 0, paddleDir: 0, paddleRun: 0, ball: { x: 0, y: 0, vx: 0, vy: 0 }, bricks: bricks,
+      score: 0, broken: 0, serving: true, core: core.create() };
     serve(s);
     return s;
   }
@@ -132,12 +134,25 @@
     s.broken += 1;
   }
 
+  /* Moves the paddle for dt seconds. A held direction starts at 900 px/s and speeds up to 2400 px/s
+     over a quarter of a second; letting go or turning round starts the climb again. */
+  function movePaddle(s, dt, dir) {
+    if (dir !== s.paddleDir) {
+      s.paddleDir = dir;
+      s.paddleRun = 0;
+    }
+    if (dir === 0) { return; }
+    var speed = Math.min(PADDLE_MAX_SPEED, PADDLE_START_SPEED + PADDLE_ACCEL * s.paddleRun);
+    s.paddleX = clamp(s.paddleX + dir * speed * dt, 0, W - PADDLE_W);
+    s.paddleRun += dt;
+  }
+
   /* Moves the paddle (dir is -1, 0 or 1), the core and the ball by dt seconds. Returns the events,
      in order: "wall", "paddle", "brick", "core", "lost". */
   function step(s, dt, dir) {
     var events = [];
     var ball = s.ball;
-    s.paddleX = clamp(s.paddleX + dir * PADDLE_SPEED * dt, 0, W - PADDLE_W);
+    movePaddle(s, dt, dir);
     core.move(s.core, dt);
     if (s.serving) {
       follow(s);
