@@ -24,6 +24,20 @@ test("the core is worth 500 points", function () {
   assert.strictEqual(score.CORE_POINTS, 500);
 });
 
+test("the score is multiplied by the lives left, up to 999,999,999,999", function () {
+  assert.strictEqual(score.multiply(1500, 10), 15000);
+  assert.strictEqual(score.multiply(1500, 1), 1500);
+  assert.strictEqual(score.multiply(500000000000, 10), 999999999999);
+  assert.strictEqual(score.multiply(99999999999, 10), 999999999990);
+});
+
+test("a score is written with a comma every three digits", function () {
+  assert.deepStrictEqual(
+    [0, 999, 1000, 1234567, 999999999999].map(score.formatScore),
+    ["0", "999", "1,000", "1,234,567", "999,999,999,999"]
+  );
+});
+
 test("the speed rises 5% for every 20 bricks broken, compounded", function () {
   near(score.speed(0, 0), 720);
   near(score.speed(0, 19), 720);

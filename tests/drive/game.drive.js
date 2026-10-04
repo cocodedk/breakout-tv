@@ -65,13 +65,13 @@ runDrive(async function (browser, url) {
   assert.strictEqual(first.screen, "play");
   assert.strictEqual(first.state, "serve");
   assert.strictEqual(first.score, 0);
-  assert.strictEqual(first.lives, 3);
+  assert.strictEqual(first.lives, 10);
   assert.strictEqual(first.level, 1);
   assert.strictEqual(first.paddleX, 680);
   assert.strictEqual(first.ball.x, first.paddleX + 120, "the ball sits on the paddle");
   assert.strictEqual(await h.text(page, "#hud-score"), "Score 0");
   assert.strictEqual(await h.text(page, "#hud-level"), "Level 1");
-  assert.strictEqual(await h.text(page, "#hud-lives"), "Lives ● ● ●");
+  assert.strictEqual(await h.text(page, "#hud-lives"), "Lives 10");
   assert.ok(await page.isVisible("#play-hint"), "the launch hint shows in Serve");
 
   await holdAndCheck(page, K.RIGHT, 600);

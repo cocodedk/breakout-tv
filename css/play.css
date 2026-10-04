@@ -11,7 +11,7 @@
 
 #hud span { position: absolute; top: 0; white-space: nowrap; }
 #hud-score { left: 0; }
-#hud-sound { left: 360px; font-size: 28px; }
+#hud-sound { left: 1040px; font-size: 28px; }
 #hud-level { left: 600px; width: 400px; text-align: center; }
 #hud-lives { right: 0; }
 
@@ -25,7 +25,7 @@
   background: #070b1e;
 }
 
-#play-hint, #play-banner {
+#play-hint, #play-banner, #play-bonus {
   position: absolute;
   left: 162px;
   width: 1600px;
@@ -35,3 +35,4 @@
 
 #play-hint { top: 454px; font-size: 36px; }
 #play-banner { top: 520px; font-size: 96px; font-weight: bold; color: #ffd447; }
+#play-bonus { top: 660px; font-size: 56px; color: #ffd447; }

@@ -35,7 +35,7 @@ async function checkRetry(page, loop, speed) {
   await h.tap(page, K.ENTER);
   var snap = await h.snap(page);
   assert.deepStrictEqual([snap.screen, snap.state, snap.level, snap.loop, snap.bricksLeft, snap.lives, snap.score],
-    ["play", "serve", 2, loop, 72, 3, 1000], "retry loop " + loop);
+    ["play", "serve", 2, loop, 72, 10, 1000], "retry loop " + loop);
   assert.deepStrictEqual([snap.core.x, snap.core.dir], [800, 1], "the core starts at x 800 moving right");
   assert.strictEqual(snap.levelStartScore, 1000, "the retry started from the same score");
   h.near(await launchSpeed(page), speed, 1, "start speed of loop " + loop);
@@ -60,13 +60,13 @@ runDrive(async function (browser, url) {
   await h.tap(page, K.ENTER);
   var snap = await h.snap(page);
   assert.deepStrictEqual([snap.screen, snap.state, snap.level, snap.loop, snap.score, snap.lives],
-    ["play", "serve", 1, 0, 0, 3], "Start over");
+    ["play", "serve", 1, 0, 0, 10], "Start over");
 
   await loseOn(page, { score: 300 });
   assert.strictEqual(await h.text(page, "#over-retry"), "Retry level 1");
   await h.tap(page, K.ENTER);
   snap = await h.snap(page);
-  assert.deepStrictEqual([snap.level, snap.score, snap.lives], [1, 0, 3], "retrying level 1 of a new game");
+  assert.deepStrictEqual([snap.level, snap.score, snap.lives], [1, 0, 10], "retrying level 1 of a new game");
 
   await loseOn(page, { level: 3, levelStartScore: 700, score: 900 });
   await h.tap(page, K.RIGHT);
@@ -86,19 +86,18 @@ runDrive(async function (browser, url) {
   await h.seed(page, Object.assign({ score: 400 }, h.atCore()));
   await page.clock.runFor(2800);
   snap = await h.snap(page);
-  assert.deepStrictEqual([snap.state, snap.level, snap.levelStartScore], ["serve", 2, snap.score]);
-  assert.ok(snap.score >= 400);
+  assert.deepStrictEqual([snap.state, snap.level, snap.levelStartScore, snap.score], ["serve", 2, 9000, 9000]);
 
   // The best score is saved at Game over; a retry leaves it, and a lower score later keeps it.
   await loseOn(page, { score: 5000 });
   assert.ok(await page.isVisible("#over-new-best"));
-  assert.strictEqual(await h.text(page, "#over-best"), "Best score 5000");
+  assert.strictEqual(await h.text(page, "#over-best"), "Best score 5,000");
   await h.tap(page, K.ENTER);
   await loseOn(page, { score: 20 });
   assert.ok(!(await page.isVisible("#over-new-best")));
-  assert.strictEqual(await h.text(page, "#over-best"), "Best score 5000", "a lower score keeps the best");
+  assert.strictEqual(await h.text(page, "#over-best"), "Best score 5,000", "a lower score keeps the best");
   await h.tap(page, K.BACK);
-  assert.strictEqual(await h.text(page, "#title-best"), "Best score: 5000");
+  assert.strictEqual(await h.text(page, "#title-best"), "Best score: 5,000");
 
   assert.deepStrictEqual(page.errors, []);
   console.log("retry drive: ok");

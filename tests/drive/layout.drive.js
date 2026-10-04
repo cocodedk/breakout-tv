@@ -41,6 +41,30 @@ function measure() {
   return problems;
 }
 
+/* Runs in the page: the HUD's visible texts as boxes inside the HUD, left to right. */
+function hudBoxes() {
+  var hud = document.getElementById("hud").getBoundingClientRect();
+  return Array.prototype.slice.call(document.querySelectorAll("#hud span"))
+    .filter(function (el) { return el.getClientRects().length > 0; })
+    .map(function (el) {
+      var r = el.getBoundingClientRect();
+      return { id: el.id, left: r.left - hud.left, right: r.right - hud.left };
+    })
+    .sort(function (a, b) { return a.left - b.left; });
+}
+
+/* The HUD row with the biggest score, Sound off and Lives 10: the texts in their places, none touching. */
+async function checkHud(page) {
+  var boxes = await page.evaluate(hudBoxes);
+  assert.deepStrictEqual(boxes.map(function (b) { return b.id; }), ["hud-score", "hud-level", "hud-sound", "hud-lives"]);
+  assert.ok(boxes[0].right < 600, "the score ends before 600");
+  assert.ok(boxes[2].left >= 1040 && boxes[2].left < 1041, "Sound off starts at 1040");
+  assert.ok(Math.abs(boxes[3].right - 1600) < 1, "the lives end at the right edge");
+  for (var i = 1; i < boxes.length; i++) {
+    assert.ok(boxes[i].left > boxes[i - 1].right, boxes[i].id + " clears " + boxes[i - 1].id);
+  }
+}
+
 async function checkLayout(page, where) {
   assert.deepStrictEqual(await page.evaluate(measure), [], "layout on " + where);
 }
@@ -53,7 +77,11 @@ runDrive(async function (browser, url) {
   await h.startGame(page);
   await h.tap(page, K.M);
   assert.ok(await page.isVisible("#hud-sound"), "Sound off shows in the HUD");
-  await checkLayout(page, "play in Serve, with Sound off showing");
+  await h.seed(page, { score: 999999999999 });
+  assert.strictEqual(await h.text(page, "#hud-score"), "Score 999,999,999,999");
+  assert.strictEqual(await h.text(page, "#hud-lives"), "Lives 10");
+  await checkHud(page);
+  await checkLayout(page, "play in Serve, with the biggest score, Sound off and Lives 10 showing");
   await h.tap(page, K.M);
 
   await h.seed(page, { score: 1234567 });
@@ -64,10 +92,17 @@ runDrive(async function (browser, url) {
   await h.seed(page, h.atCore([{ col: 0, row: 2, color: "R" }]));
   await page.clock.runFor(100);
   assert.strictEqual((await h.snap(page)).state, "dissolve");
-  await checkLayout(page, "the dissolve");
+  assert.ok(await page.isVisible("#play-bonus"));
+  var gap = await page.evaluate(function () {
+    return document.getElementById("play-bonus").getBoundingClientRect().top -
+      document.getElementById("playfield").getBoundingClientRect().top;
+  });
+  assert.strictEqual(gap, 508, "the bonus line is 508px below the playfield's top");
+  await checkLayout(page, "the dissolve, with the bonus line");
   await page.clock.runFor(1100);
   assert.ok(await page.isVisible("#play-banner"));
-  await checkLayout(page, "the level banner");
+  assert.ok(await page.isVisible("#play-bonus"));
+  await checkLayout(page, "the level banner, with the bonus line");
   await page.clock.runFor(1500);
 
   await h.seed(page, { lives: 1, ball: { x: 100, y: 600, vx: 0, vy: 720 } });

@@ -3,7 +3,6 @@
   "use strict";
   var g = BO.session;
   var DASH = "—";
-  var DOT = "●";
   var HUE_PERIOD = 4000;
   var ctx = null;
 
@@ -14,30 +13,33 @@
   /* The HUD row and the playfield, from the session. The wall's fade and the ball's hiding follow
      from the phase the game is in; the UFO's hue turns a full circle every 4 seconds. */
   function refresh() {
-    var dots = [];
-    for (var i = 0; i < g.lives; i++) { dots.push(DOT); }
-    BO.screens.text("hud-score", "Score " + g.s.score);
+    BO.screens.text("hud-score", "Score " + BO.score.formatScore(g.s.score));
     BO.screens.text("hud-level", "Level " + g.level);
-    BO.screens.text("hud-lives", "Lives " + dots.join(" "));
+    BO.screens.text("hud-lives", "Lives " + g.lives);
     var hue = (performance.now() / HUE_PERIOD * 360) % 360;
     BO.render.draw(ctx, g.s, { fade: BO.phases.fade(), ballHidden: BO.phases.timed(), hue: hue });
   }
 
-  /* Serve, Moving, Dissolve or Banner: the launch hint and the level banner follow it. */
+  /* Serve, Moving, Dissolve or Banner: the launch hint, the level banner and the lives bonus follow it. */
   function setState(next) {
     g.state = next;
     BO.screens.setHidden("play-hint", next !== "serve");
     BO.screens.setHidden("play-banner", next !== "banner");
+    BO.screens.setHidden("play-bonus", next !== "dissolve" && next !== "banner");
+  }
+
+  function best() {
+    return g.best > 0 ? BO.score.formatScore(g.best) : DASH;
   }
 
   function showTitle() {
     BO.screens.show("title");
-    BO.screens.text("title-best", "Best score: " + (g.best > 0 ? g.best : DASH));
+    BO.screens.text("title-best", "Best score: " + best());
   }
 
   function showOver(isNew) {
-    BO.screens.text("over-score", "Score " + g.s.score);
-    BO.screens.text("over-best", "Best score " + (g.best > 0 ? g.best : DASH));
+    BO.screens.text("over-score", "Score " + BO.score.formatScore(g.s.score));
+    BO.screens.text("over-best", "Best score " + best());
     BO.screens.text("over-retry", "Retry level " + g.level);
     BO.screens.setHidden("over-new-best", !isNew);
     BO.screens.show("over");

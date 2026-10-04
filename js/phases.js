@@ -35,8 +35,11 @@
     return g.state === "dissolve" ? 1 - g.phaseLeft / PHASES.dissolve.ms : 0;
   }
 
-  /* The ball touched the core: the ball goes, and the wall that is left fades away. */
+  /* The ball touched the core, its points already added: the score is multiplied by the lives left,
+     the ball goes, and the wall that is left fades away. */
   function dissolve() {
+    g.s.score = BO.score.multiply(g.s.score, g.lives);
+    screens.text("play-bonus", g.lives + (g.lives === 1 ? " life" : " lives") + " left: score × " + g.lives);
     enter("dissolve");
   }
 
